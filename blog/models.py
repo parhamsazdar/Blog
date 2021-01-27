@@ -3,6 +3,8 @@ from django.db import models
 
 
 # Create your models here.
+from django.utils import timezone
+
 
 class Post(models.Model):
     title = models.CharField('عنوان', max_length=50)
@@ -12,6 +14,7 @@ class Post(models.Model):
     active = models.BooleanField('فعال')
     like = models.IntegerField()
     dislike = models.IntegerField()
+    date_pub=models.DateTimeField(default=timezone.now)
     category = models.ManyToManyField('Category', through='Post_category', through_fields=('post', 'category'))
     tags = models.ManyToManyField('Tags', through='Post_tags', through_fields=('post', 'tags'))
     writer = models.ForeignKey('Writer', on_delete=models.PROTECT, related_name='posts', verbose_name='نویسنده')
@@ -52,6 +55,7 @@ class Comments(models.Model):
     title=models.CharField('عنوان',max_length=20)
     text=models.TextField('متن')
     confirm = models.BooleanField('تایید')
+    date_pub = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title
