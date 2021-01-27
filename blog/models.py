@@ -34,6 +34,7 @@ class Like(models.Model):
     like = models.IntegerField()
     dislike = models.IntegerField()
     user_id = models.ForeignKey(User, verbose_name='صاحب علاقه مندی', on_delete=models.CASCADE,null=True)
+    post=models.ForeignKey(Post,on_delete=models.CASCADE,related_name='like',verbose_name='پست',null=True)
 
     def __str__(self):
         return self.user_id.first_name+" likes: "+str(self.like)+" dislike: "+str(self.dislike)
