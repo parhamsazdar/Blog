@@ -5,33 +5,53 @@ from django.db import models
 from django.utils import timezone
 
 
-class Post(models.Model):
-    class Meta:
-        permissions=[
-            ("wirte_post","نوشتن مطلب در سایت"),
-            ("edit_post","ویرایش مطلب در سایت"),
-            ("comment_post", "نظر گذاشتن برای مطلب در سایت"),
-            ("confirm","تایید کردن مطلب"),
-            ("active","فعال کردن مطلب")
-        ]
-
-
+class Text(models.Model):
     title = models.CharField('عنوان', max_length=50)
     text = models.TextField('متن')
-    image = models.ImageField(verbose_name='عکس پست')
-    confirm = models.BooleanField('تایید')
-    active = models.BooleanField('فعال')
+    confirm = models.BooleanField('تایید', default=False)
+    active = models.BooleanField('فعال', default=False)
     date_pub = models.DateTimeField(default=timezone.now)
-    category = models.ManyToManyField('Category', through='Post_category', through_fields=('post', 'category'))
-    tags = models.ManyToManyField('Tags', through='Post_tags', through_fields=('post', 'tags'))
-    user = models.ForeignKey('User_info', null=True,on_delete=models.PROTECT, related_name='posts', verbose_name='نویسنده')
-    comments = models.ManyToManyField('Comments', through='Post_comments', through_fields=('post', 'comments'))
+    user = models.ForeignKey(User, null=True, on_delete=models.PROTECT, related_name='user_%(class)s',
+                             verbose_name='کاربر')
+    like = models.ManyToManyField(User, related_name="user_like_%(class)s", related_query_name="user_like_%(class)s")
+    dislike = models.ManyToManyField(User, related_name="user_dislike_%(class)s",
+                                     related_query_name="user_dislike_%(class)s")
 
+    class Meta:
+        permissions = [
+            ("wirte", "نوشتن"),
+            ("edit", "ویرایش"),
+            ("comment", "نظر"),
+            ("confirm", "تایید"),
+            ("active", "فعال")
+        ]
+        abstract = True
     def __str__(self):
         return self.title
 
+class Post(Text):
+    class Meta(Text.Meta):
+
+        verbose_name="پست"
+        verbose_name_plural="پست ها"
+
+    image = models.ImageField(verbose_name='عکس پست')
+    category = models.ManyToManyField('Category', through='Post_category', through_fields=('post', 'category'))
+    tags = models.ManyToManyField('Tags', through='Post_tags', through_fields=('post', 'tags'))
+    comments = models.ManyToManyField('Comments', through='Post_comments', through_fields=('post', 'comments'))
+
+class Comments(Text):
+    class Meta(Text.Meta):
+        verbose_name = "نظر"
+        verbose_name_plural = "نظرات"
+    pass
+
 
 class Category(models.Model):
+    class Meta:
+        verbose_name="دسته بندی"
+        verbose_name_plural="دسته بندی ها"
+
     name = models.CharField('عنوان دسته بندی', max_length=30)
     parent = models.ForeignKey('Category', on_delete=models.PROTECT, null=True, blank=True, verbose_name='پدر',
                                related_name='subcategory')
@@ -40,50 +60,28 @@ class Category(models.Model):
         return self.name
 
 
-class Like(models.Model):
-    like = models.BooleanField(null=True)
-    dislike = models.BooleanField(null=True)
-    user = models.ForeignKey('User_info', verbose_name='صاحب علاقه مندی', on_delete=models.CASCADE,null=True)
-    post=models.ForeignKey(Post,on_delete=models.CASCADE,related_name='like',verbose_name='پست',null=True)
-    comment=models.ForeignKey('Comments',on_delete=models.CASCADE,related_name='like',verbose_name='like نظر',null=True)
-    # def __str__(self):
-    #     return self.user_id.first_name+" likes: "+str(self.like)+" dislike: "+str(self.dislike)
-
 class Tags(models.Model):
+    class Meta:
+        verbose_name="برچسب"
+        verbose_name_plural="برچسب ها"
     name = models.CharField('پرجسب', max_length=30)
-
     def __str__(self):
         return self.name
 
 
 class User_info(models.Model):
-    phone=models.IntegerField('شماره تلفن',null=True,blank=True)
+    phone = models.IntegerField('شماره تلفن', null=True, blank=True)
     photo = models.ImageField(verbose_name='عکس کاربر')
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='آیدی کاربری', related_name='writer',null=True)
-
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='آیدی کاربری', related_name='writer',
+                                null=True)
     def __str__(self):
-        return self.first_name + ' ' + self.last_name
+        return str(self.user)
 
-
-class Comments(models.Model):
-    class Meta:
-        permissions=[
-            ( "confirm","تایید کردن نظر",)
-        ]
-    title = models.CharField('عنوان', max_length=20)
-    text = models.TextField('متن')
-    confirm = models.BooleanField('تایید')
-    date_pub = models.DateTimeField(default=timezone.now)
-    user = models.ForeignKey(User_info, verbose_name='صاحب نظر', related_name='comment', on_delete=models.CASCADE,null=True)
-
-    def __str__(self):
-        return self.title
 
 
 class Post_category(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_cat', verbose_name='پست')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category', verbose_name='دسته بندی')
-
     def __str__(self):
         return self.post.title + '_' + self.category.name
 
@@ -93,7 +91,6 @@ class Post_tags(models.Model):
                              blank=True)
     tags = models.ForeignKey(Tags, on_delete=models.CASCADE, related_name='tags', verbose_name='برچسب', null=True,
                              blank=True)
-
     def __str__(self):
         return self.post.title + '_' + self.tags.name
 
