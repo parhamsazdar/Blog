@@ -14,7 +14,7 @@ class Post(models.Model):
     date_pub = models.DateTimeField(default=timezone.now)
     category = models.ManyToManyField('Category', through='Post_category', through_fields=('post', 'category'))
     tags = models.ManyToManyField('Tags', through='Post_tags', through_fields=('post', 'tags'))
-    writer = models.ForeignKey('Writer', on_delete=models.PROTECT, related_name='posts', verbose_name='نویسنده')
+    user = models.ForeignKey('User_info', null=True,on_delete=models.PROTECT, related_name='posts', verbose_name='نویسنده')
     comments = models.ManyToManyField('Comments', through='Post_comments', through_fields=('post', 'comments'))
 
     def __str__(self):
@@ -31,13 +31,13 @@ class Category(models.Model):
 
 
 class Like(models.Model):
-    like = models.IntegerField()
-    dislike = models.IntegerField()
-    user_id = models.ForeignKey(User, verbose_name='صاحب علاقه مندی', on_delete=models.CASCADE,null=True)
+    like = models.BooleanField(null=True)
+    dislike = models.BooleanField(null=True)
+    user = models.ForeignKey('User_info', verbose_name='صاحب علاقه مندی', on_delete=models.CASCADE,null=True)
     post=models.ForeignKey(Post,on_delete=models.CASCADE,related_name='like',verbose_name='پست',null=True)
-
-    def __str__(self):
-        return self.user_id.first_name+" likes: "+str(self.like)+" dislike: "+str(self.dislike)
+    comment=models.ForeignKey('Comments',on_delete=models.CASCADE,related_name='like',verbose_name='like نظر',null=True)
+    # def __str__(self):
+    #     return self.user_id.first_name+" likes: "+str(self.like)+" dislike: "+str(self.dislike)
 
 class Tags(models.Model):
     name = models.CharField('پرجسب', max_length=30)
@@ -46,11 +46,9 @@ class Tags(models.Model):
         return self.name
 
 
-class Writer(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='آِِِیدی کاربری', related_name='wirter')
+class User_info(models.Model):
     photo = models.ImageField(verbose_name='عکس کاربر')
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='آیدی کاربری', related_name='writer',null=True)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True, related_name='writer_post')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='آیدی کاربری', related_name='writer',null=True)
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
@@ -61,7 +59,7 @@ class Comments(models.Model):
     text = models.TextField('متن')
     confirm = models.BooleanField('تایید')
     date_pub = models.DateTimeField(default=timezone.now)
-    user_id = models.ForeignKey(User, verbose_name='صاحب نظر', related_name='comment', on_delete=models.CASCADE,null=True)
+    user = models.ForeignKey(User_info, verbose_name='صاحب نظر', related_name='comment', on_delete=models.CASCADE,null=True)
 
     def __str__(self):
         return self.title
