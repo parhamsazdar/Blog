@@ -6,6 +6,16 @@ from django.utils import timezone
 
 
 class Post(models.Model):
+    class Meta:
+        permissions=[
+            ("wirte_post","نوشتن مطلب در سایت"),
+            ("edit_post","ویرایش مطلب در سایت"),
+            ("comment_post", "نظر گذاشتن برای مطلب در سایت"),
+            ("confirm","تایید کردن مطلب"),
+            ("active","فعال کردن مطلب")
+        ]
+
+
     title = models.CharField('عنوان', max_length=50)
     text = models.TextField('متن')
     image = models.ImageField(verbose_name='عکس پست')
@@ -47,6 +57,7 @@ class Tags(models.Model):
 
 
 class User_info(models.Model):
+    phone=models.IntegerField('شماره تلفن',null=True,blank=True)
     photo = models.ImageField(verbose_name='عکس کاربر')
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='آیدی کاربری', related_name='writer',null=True)
 
@@ -55,6 +66,10 @@ class User_info(models.Model):
 
 
 class Comments(models.Model):
+    class Meta:
+        permissions=[
+            ( "confirm","تایید کردن نظر",)
+        ]
     title = models.CharField('عنوان', max_length=20)
     text = models.TextField('متن')
     confirm = models.BooleanField('تایید')
