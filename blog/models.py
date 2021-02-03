@@ -3,19 +3,20 @@ from django.db import models
 
 # Create your models here.
 from django.utils import timezone
-
+from tinymce.models import HTMLField
 
 class Text(models.Model):
     title = models.CharField('عنوان', max_length=50)
-    text = models.TextField('متن')
+    text = HTMLField(verbose_name='متن')
     confirm = models.BooleanField('تایید', default=False)
     active = models.BooleanField('فعال', default=False)
     date_pub = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(User, null=True, on_delete=models.PROTECT, related_name='user_%(class)s',
                              verbose_name='کاربر')
-    like = models.ManyToManyField(User, related_name="user_like_%(class)s", related_query_name="user_like_%(class)s")
+    like = models.ManyToManyField(User, related_name="user_like_%(class)s", related_query_name="user_like_%(class)s",blank=True,null=True)
     dislike = models.ManyToManyField(User, related_name="user_dislike_%(class)s",
-                                     related_query_name="user_dislike_%(class)s")
+                                     related_query_name="user_dislike_%(class)s",blank=True,null=True)
+
 
     class Meta:
         permissions = [
@@ -35,7 +36,7 @@ class Post(Text):
         verbose_name="پست"
         verbose_name_plural="پست ها"
 
-    image = models.ImageField(verbose_name='عکس پست')
+    image = models.ImageField(verbose_name='عکس پست',upload_to='uploads/post_image')
     category = models.ManyToManyField('Category', through='Post_category', through_fields=('post', 'category'))
     tags = models.ManyToManyField('Tags', through='Post_tags', through_fields=('post', 'tags'))
     comments = models.ManyToManyField('Comments', through='Post_comments', through_fields=('post', 'comments'))
@@ -71,8 +72,8 @@ class Tags(models.Model):
 
 class User_info(models.Model):
     phone = models.IntegerField('شماره تلفن', null=True, blank=True)
-    photo = models.ImageField(verbose_name='عکس کاربر')
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='آیدی کاربری', related_name='writer',
+    photo = models.ImageField(verbose_name='عکس کاربر',upload_to='uploads/user_photo')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='آیدی کاربری', related_name='user',
                                 null=True)
     def __str__(self):
         return str(self.user)

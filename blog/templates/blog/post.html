@@ -1,0 +1,128 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% load jformat %}
+{% load bootstrap %}
+{% block linkcss %}
+    <link rel="stylesheet" href="{% static "blog/css/post.css" %}">
+    <link href="http://fonts.googleapis.com/css?family=Calibri:400,300,700">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+
+{% endblock %}
+{% block content %}
+
+
+    {% comment %} part body post (main-part) {% endcomment %}
+    <div class="card" style="width: 80%;">
+        {% comment %} part header post (main-part) {% endcomment %}
+        <div class="card" style="width: 100%;">
+            <div class="row no-gutters">
+                <div class="col-sm-10">
+                    <div class="card-body">
+                        <div class="col-sm-2">
+                            <img class="card-header" src="{{ MEDIA_URL }}{{ photo.url }}"
+                                 style=";width: 50px;border-radius: 50%;padding: 0">
+                        </div>
+                        <h5 class="card-title">نویسنده:{{ post.user.first_name|add:" "|add:post.user.last_name }}</h5>
+                        <p class="card-text">تاریخ
+                            انتشار:{{ post.date_pub | jformat:"%A %d %B %Y %H:%M" }}</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <img class="card-img-top" src="{{ MEDIA_URL }}{{ post.image.url }}" alt="Card image cap" style="width:100%;">
+        <div class="card-body">
+            <h5 class="card-title">{{ post.title }}</h5>
+            <p class="card-text">{{ post.text | safe }}.</p>
+            <ul class="list-inline" style="padding: 0">
+                {% for tag in post.tags.all %}
+                    <li id="li_tag" class="list-inline-item bg-light"><a id="tag" class="social-icon text-xs-center"
+                                                                             target="_blank" href="#">
+                        <h5 class="text-secondary">{{ tag }}</h5></a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% comment %} part  record comment {% endcomment %}
+        <div class="row">
+            <div class="col">
+
+                <form>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-sm-3 col-lg-2 hidden-xs">
+                                <img class="img-responsive" src="{{ MEDIA_URL }}{{ user_photo.url }}" alt="">
+                                <p>{{ user.first_name|add:" "|add:user.last_name }}</p>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-9 col-lg-10">
+                            <textarea class="form-control" id="message" placeholder="نظر شما ..."
+                                      required="" rows=7 name="{{ form.text.name }}"></textarea>
+                            </div>
+
+
+                        </div>
+                        <button type="submit" class="btn btn-normal pull-left">ثبت نظر</button>
+                    </fieldset>
+                </form>
+
+
+            </div>
+        </div>
+        {% comment %} part comment {% endcomment %}
+        <div class="card" style="width: 100%">
+            <div class="card-body">
+                <h4 class="card-title">نظرات</h4>
+                <h6 class="card-subtitle">آخرین نظرات</h6>
+            </div>
+            <div class="comment-widgets m-b-20">
+
+                {% for comment in post.comments.all %}
+                    <div class="d-flex flex-row comment-row">
+                        <div class="p-2"><span class="round"><img src="{{ MEDIA_URL }}{{ photo.url }}" alt="user"
+                                                                  width="50"></span></div>
+                        <div class="comment-text w-100">
+                            <h5>{{ comment.user.first_name|add:" "|add:comment.user.last_name }}</h5>
+                            <div class="comment-footer"><span
+                                    class="date">{{ comment.date_pub|jformat:"%A %d %B %Y %H:%M" }}</span>
+                                <p class="m-b-5 m-t-10">{{ comment.text|safe }}</p>
+                                <span class="action-icons"> <a href="#" data-abc="true"><i class="fa fa-pencil"></i></a> <a
+                                        href="#" data-abc="true"><i class="fa fa-thumbs-up"></i></a> <a href="#"
+                                                                                                        data-abc="true"><i
+                                        class="fa fa-thumbs-down"></i></a> </span></div>
+
+                        </div>
+                    </div>
+                    </div>
+                {% endfor %}
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

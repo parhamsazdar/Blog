@@ -1,0 +1,169 @@
+@font-face {
+    font-family: Vazir;
+    src: url(/static/fonts/Vazir.ttf);
+        }
+* {
+    font-family: Vazir;
+
+}
+#li_tag {
+
+    border-radius: 5px;
+    width: 100px;
+    height: 30px;
+    text-align: center;
+}
+
+#li_tag > a > h5{
+
+     margin:0;
+}
+
+#tag {
+    text-decoration: none;
+
+}
+
+fieldset img {
+    width: 50px;
+    border-radius: 50%;
+}
+
+html,
+body {
+    height: 100%
+}
+
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 20px;
+    width: 450px;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border-radius: 6px;
+    -moz-box-shadow: 0px 0px 5px 0px rgba(212, 182, 212, 1)
+}
+
+.comment-box {
+    padding: 5px
+}
+
+.comment-area textarea {
+    resize: none;
+    border: 1px solid #ad9f9f
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #ffffff;
+    outline: 0;
+    box-shadow: 0 0 0 1px rgb(255, 0, 0) !important
+}
+
+.send {
+    color: #fff;
+    background-color: #ff0000;
+    border-color: #ff0000
+}
+
+.send:hover {
+    color: #fff;
+    background-color: #f50202;
+    border-color: #f50202
+}
+
+
+
+
+
+
+
+.card-no-border .card {
+    border: 0px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05)
+}
+
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem
+}
+
+.comment-widgets .comment-row:hover {
+    background: rgba(0, 0, 0, 0.02);
+    cursor: pointer
+}
+
+.comment-widgets .comment-row {
+    border-bottom: 1px solid rgba(120, 130, 140, 0.13);
+    padding: 15px
+}
+
+.comment-text:hover {
+    visibility: hidden
+}
+
+.comment-text:hover {
+    visibility: visible
+}
+
+.label {
+    padding: 3px 10px;
+    line-height: 13px;
+    color: #ffffff;
+    font-weight: 400;
+    border-radius: 4px;
+    font-size: 75%
+}
+
+.round img {
+    border-radius: 100%
+}
+
+.label-info {
+    background-color: #1976d2
+}
+
+.label-success {
+    background-color: green
+}
+
+.label-danger {
+    background-color: #ef5350
+}
+
+.action-icons a {
+    padding-left: 7px;
+    vertical-align: middle;
+    color: #99abb4
+}
+
+.action-icons a:hover {
+    color: #1976d2
+}
+
+.mt-100 {
+    margin-top: 100px
+}
+
+.mb-100 {
+    margin-bottom: 100px
+}
+
+
+
+
+
+
+
+
+
+
