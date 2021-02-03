@@ -34,41 +34,50 @@
             </div>
         </div>
 
-
-        <img class="card-img-top" src="{{ MEDIA_URL }}{{ post.image.url }}" alt="Card image cap" style="width:100%;">
+        {% if post.image %}
+            <img class="card-img-top" src="{{ MEDIA_URL }}{{ post.image.url }}" alt="Card image cap"
+                 style="width:100%;">
+        {% endif %}
         <div class="card-body">
             <h5 class="card-title">{{ post.title }}</h5>
             <p class="card-text">{{ post.text | safe }}.</p>
             <ul class="list-inline" style="padding: 0">
                 {% for tag in post.tags.all %}
                     <li id="li_tag" class="list-inline-item bg-light"><a id="tag" class="social-icon text-xs-center"
-                                                                             target="_blank" href="#">
+                                                                         target="_blank" href="#">
                         <h5 class="text-secondary">{{ tag }}</h5></a></li>
                 {% endfor %}
             </ul>
+            {% if user_photo %}
+                <span class="action-icons"> <a href="#" data-abc="true"></a> <a
+                        href="#" data-abc="true"><i class="fa fa-thumbs-up fa-2x"></i></a> <a href="#"
+                                                                                              data-abc="true"><i
+                        class="fa fa-thumbs-down fa-2x"></i></a><p class="pull-left">{{ post.like.count }}</p> </span>
+            {% endif %}
+
         </div>
         {% comment %} part  record comment {% endcomment %}
         <div class="row">
             <div class="col">
-
-                <form>
-                    <fieldset>
-                        <div class="row">
-                            <div class="col-sm-3 col-lg-2 hidden-xs">
-                                <img class="img-responsive" src="{{ MEDIA_URL }}{{ user_photo.url }}" alt="">
-                                <p>{{ user.first_name|add:" "|add:user.last_name }}</p>
-                            </div>
-                            <div class="form-group col-xs-12 col-sm-9 col-lg-10">
+                {% if user_photo %}
+                    <form>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-sm-3 col-lg-2 hidden-xs">
+                                    <img class="img-responsive" src="{{ MEDIA_URL }}{{ user_photo.url }}" alt="">
+                                    <p>{{ user.first_name|add:" "|add:user.last_name }}</p>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-9 col-lg-10">
                             <textarea class="form-control" id="message" placeholder="نظر شما ..."
                                       required="" rows=7 name="{{ form.text.name }}"></textarea>
+                                </div>
+
+
                             </div>
-
-
-                        </div>
-                        <button type="submit" class="btn btn-normal pull-left">ثبت نظر</button>
-                    </fieldset>
-                </form>
-
+                            <button type="submit" class="btn btn-normal pull-left">ثبت نظر</button>
+                        </fieldset>
+                    </form>
+                {% endif %}
 
             </div>
         </div>
@@ -92,37 +101,15 @@
                                 <span class="action-icons"> <a href="#" data-abc="true"><i class="fa fa-pencil"></i></a> <a
                                         href="#" data-abc="true"><i class="fa fa-thumbs-up"></i></a> <a href="#"
                                                                                                         data-abc="true"><i
-                                        class="fa fa-thumbs-down"></i></a> </span></div>
+                                        class="fa fa-thumbs-down"></i></a> </span>
+
+
+                            </div>
 
                         </div>
                     </div>
                     </div>
                 {% endfor %}
         </div>
-
-
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 {% endblock %}

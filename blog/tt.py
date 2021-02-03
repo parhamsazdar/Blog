@@ -1,7 +1,7 @@
-from googletrans import Translator
-translator = Translator(service_urls=[
-      'translate.google.com',
-      'translate.google.co.kr',
-    ])
-
-translator.translate('hello')
+# from googletrans import Translator
+# translator = Translator(service_urls=[
+#       'translate.google.com',
+#       'translate.google.co.kr',
+#     ])
+#
+# translator.translate('hello')
