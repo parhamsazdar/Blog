@@ -12,8 +12,8 @@ class Text(models.Model):
     text = HTMLField(verbose_name='متن')
     confirm = models.BooleanField('تایید', default=False)
     active = models.BooleanField('فعال', default=False)
-    date_pub = models.DateTimeField(default=timezone.now)
-    user = models.ForeignKey(User, null=True, on_delete=models.PROTECT, related_name='user_%(class)s',
+    date_pub = models.DateTimeField(verbose_name="تاریخ انتشار")
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name='user_%(class)s',
                              verbose_name='کاربر')
     like = models.ManyToManyField(User, related_name="user_like_%(class)s", related_query_name="user_like_%(class)s",
                                   blank=True, null=True)
@@ -21,12 +21,7 @@ class Text(models.Model):
                                      related_query_name="user_dislike_%(class)s", blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        # for user in self.like.all():
-        #     if user in self.dislike.all():
-        #         raise ValidationError("نمی توانید هم بپسندید هم نبپسندید ")
-        # for user in self.dislike.all():
-        #     if user in self.like.all():
-        #         raise ValidationError("نمی توانید هم بپسندید هم نبپسندید ")
+        self.date_pub = timezone.now()
         super(Text, self).save(*args, **kwargs)
 
     class Meta:
@@ -48,18 +43,16 @@ class Post(Text):
         verbose_name = "پست"
         verbose_name_plural = "پست ها"
 
-    image = models.ImageField(verbose_name='عکس پست', upload_to='uploads/post_image')
-    category = models.ManyToManyField('Category')
-    tags = models.ManyToManyField('Tags')
-    comments = models.ManyToManyField('Comments',related_name="post")
+    image = models.ImageField(verbose_name='عکس پست', upload_to='uploads/post_image', null=True, blank=True)
+    category = models.ManyToManyField('Category', verbose_name="دسته بندی")
+    tags = models.ManyToManyField('Tags', verbose_name="برجسب ها")
+    comments = models.ManyToManyField('Comments', related_name="post", null=True, blank=True)
 
 
 class Comments(Text):
     class Meta(Text.Meta):
         verbose_name = "نظر"
         verbose_name_plural = "نظرات"
-
-
 
 
 class Category(models.Model):
@@ -72,7 +65,13 @@ class Category(models.Model):
                                related_name='subcategory')
 
     def __str__(self):
-        return self.name
+        category = ''
+        cat = self
+        while cat.parent:
+            category += cat.parent.name + " > "
+            cat = cat.parent
+        category += self.name
+        return category
 
 
 class Tags(models.Model):
@@ -94,7 +93,6 @@ class User_info(models.Model):
 
     def __str__(self):
         return str(self.user)
-
 
 # class Post_category(models.Model):
 #     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_cat', verbose_name='پست')

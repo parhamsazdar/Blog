@@ -2,6 +2,7 @@
 {% load static %}
 {% load jformat %}
 {% load bootstrap %}
+
 {% block linkcss %}
     <link rel="stylesheet" href="{% static "blog/css/post.css" %}">
     <link href="http://fonts.googleapis.com/css?family=Calibri:400,300,700">
@@ -50,9 +51,9 @@
             </ul>
             {% if user_photo %}
                 <span class="action-icons"> <a href="#" data-abc="true"></a> <a
-                        href="#" data-abc="true"><i class="fa fa-thumbs-up fa-2x"></i></a> <a href="#"
+                        href="#" data-abc="true"><i class="fa fa-thumbs-up fa-2x"><span class="m-2">{{ post.like.count }}</span> </i></a> <a href="#"
                                                                                               data-abc="true"><i
-                        class="fa fa-thumbs-down fa-2x"></i></a><p class="pull-left">{{ post.like.count }}</p> </span>
+                        class="fa fa-thumbs-down fa-2x"><span class="m-2">{{ post.dislike.count }}</span> </i></a></span>
             {% endif %}
 
         </div>
@@ -99,9 +100,9 @@
                                     class="date">{{ comment.date_pub|jformat:"%A %d %B %Y %H:%M" }}</span>
                                 <p class="m-b-5 m-t-10">{{ comment.text|safe }}</p>
                                 <span class="action-icons"> <a href="#" data-abc="true"><i class="fa fa-pencil"></i></a> <a
-                                        href="#" data-abc="true"><i class="fa fa-thumbs-up"></i></a> <a href="#"
+                                        href="#" data-abc="true"><i class="fa fa-thumbs-up"><span class="m-2">{{ comment.like.count }}</span></i></a> <a href="#"
                                                                                                         data-abc="true"><i
-                                        class="fa fa-thumbs-down"></i></a> </span>
+                                        class="fa fa-thumbs-down"><span class="m-2">{{ comment.dislike.count }}</span></i></a> </span>
 
 
                             </div>

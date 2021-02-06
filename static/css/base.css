@@ -1,0 +1,8 @@
+@font-face {
+    font-family: Vazir;
+    src: url(/static/fonts/Vazir.ttf);
+        }
+* {
+    font-family: Vazir;
+
+}
