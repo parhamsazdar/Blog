@@ -1,4 +1,7 @@
+from functools import partial
+
 from django.contrib import admin, messages
+from django.forms import ModelForm
 from django.urls import reverse
 from django.utils.html import format_html
 
@@ -17,6 +20,31 @@ class User_info_inline(admin.StackedInline):
 
 class UserAdmin(BaseUserAdmin):
     inlines = (User_info_inline,)
+
+
+
+
+
+
+
+
+
+
+class Post_form(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(Post_form, self).__init__(*args, **kwargs)
+        if user is not None:
+            user=User.objects.get(user_id=user.pk)
+            self.fields['user'].queryset = user
+
+    class Meta:
+        model=Post
+        fields="__all__"
+
+
+
 
 
 @admin.register(Post)
@@ -69,9 +97,15 @@ class Post_admin(admin.ModelAdmin):
             return qs
         elif request.user.has_perm("blog.wirte"):
             self.list_display = ["title", "confirm", "active", "date_pub"]
+            self.form=partial(Post_form )
             return qs.filter(user=request.user)
         elif request.user.has_perm("blog.confirm"):
             return qs
+
+    def get_changelist_form(self, request, **kwargs):
+        if request.user.has_perm("blog.wirte"):
+            self.list_display = ["title", "confirm", "active", "date_pub"]
+        return super(Post_admin, self).get_changelist_form(request, **kwargs)
 
     def confirm_post(self, request, queryset):
         queryset.update(confirm=True)
@@ -150,9 +184,9 @@ class Comments_admin(admin.ModelAdmin):
 
 @admin.register(Category)
 class Category_admin(admin.ModelAdmin):
-    list_display = ["name","parent_category"]
+    list_display = ["name", "parent_category"]
 
-    def parent_category(self,obj):
+    def parent_category(self, obj):
         category = ''
         cat = obj
         while cat.parent:
@@ -161,7 +195,8 @@ class Category_admin(admin.ModelAdmin):
         category += obj.name
         return category
 
-    parent_category.short_description="سلسله دسته بندی"
+    parent_category.short_description = "سلسله دسته بندی"
+
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

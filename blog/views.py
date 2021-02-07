@@ -1,10 +1,21 @@
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from khayyam import JalaliDatetime
 
 from blog.forms import Comment
 from blog.models import Post, User_info
 
+from datetime import timedelta
+
+
+def index(request):
+
+    return render(request, "blog/index.html")
+
+
+def test(request):
+    return render(request,"blog/test.html")
 
 def post_show(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -19,6 +30,3 @@ def post_show(request, post_id):
                       context={"post": post, "photo": wirte.photo, "user_photo": user_photo, "form": form})
     else:
         return HttpResponseForbidden("این پست از دسترس خارج است")
-
-
-

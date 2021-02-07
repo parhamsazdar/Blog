@@ -2,7 +2,7 @@
 {% load static %}
 {% load jformat %}
 {% load bootstrap %}
-
+{% load blog_extratags %}
 {% block linkcss %}
     <link rel="stylesheet" href="{% static "blog/css/post.css" %}">
     <link href="http://fonts.googleapis.com/css?family=Calibri:400,300,700">
@@ -28,7 +28,8 @@
                         </div>
                         <h5 class="card-title">نویسنده:{{ post.user.first_name|add:" "|add:post.user.last_name }}</h5>
                         <p class="card-text">تاریخ
-                            انتشار:{{ post.date_pub | jformat:"%A %d %B %Y %H:%M" }}</p>
+                            انتشار:{{ post.date_pub | jalali_date }}
+                        </p>
                     </div>
                 </div>
 
@@ -36,7 +37,7 @@
         </div>
 
         {% if post.image %}
-            <img class="card-img-top" src="{{ MEDIA_URL }}{{ post.image.url }}" alt="Card image cap"
+            <img class="card-img-top square-wrapper" src="{{ MEDIA_URL }}{{ post.image.url }}" alt="Card image cap"
                  style="width:100%;">
         {% endif %}
         <div class="card-body">
@@ -51,9 +52,11 @@
             </ul>
             {% if user_photo %}
                 <span class="action-icons"> <a href="#" data-abc="true"></a> <a
-                        href="#" data-abc="true"><i class="fa fa-thumbs-up fa-2x"><span class="m-2">{{ post.like.count }}</span> </i></a> <a href="#"
-                                                                                              data-abc="true"><i
-                        class="fa fa-thumbs-down fa-2x"><span class="m-2">{{ post.dislike.count }}</span> </i></a></span>
+                        href="#" data-abc="true"><i class="fa fa-thumbs-up fa-2x"><span
+                        class="m-2">{{ post.like.count }}</span> </i></a> <a href="#"
+                                                                             data-abc="true"><i
+                        class="fa fa-thumbs-down fa-2x"><span
+                        class="m-2">{{ post.dislike.count }}</span> </i></a></span>
             {% endif %}
 
         </div>
@@ -72,8 +75,6 @@
                             <textarea class="form-control" id="message" placeholder="نظر شما ..."
                                       required="" rows=7 name="{{ form.text.name }}"></textarea>
                                 </div>
-
-
                             </div>
                             <button type="submit" class="btn btn-normal pull-left">ثبت نظر</button>
                         </fieldset>
@@ -97,16 +98,16 @@
                         <div class="comment-text w-100">
                             <h5>{{ comment.user.first_name|add:" "|add:comment.user.last_name }}</h5>
                             <div class="comment-footer"><span
-                                    class="date">{{ comment.date_pub|jformat:"%A %d %B %Y %H:%M" }}</span>
+                                    class="date"><p
+                                    style="font-size: 12px;">{{ comment.date_pub|jalali_date }}</p></span>
                                 <p class="m-b-5 m-t-10">{{ comment.text|safe }}</p>
                                 <span class="action-icons"> <a href="#" data-abc="true"><i class="fa fa-pencil"></i></a> <a
-                                        href="#" data-abc="true"><i class="fa fa-thumbs-up"><span class="m-2">{{ comment.like.count }}</span></i></a> <a href="#"
-                                                                                                        data-abc="true"><i
-                                        class="fa fa-thumbs-down"><span class="m-2">{{ comment.dislike.count }}</span></i></a> </span>
-
-
+                                        href="#" data-abc="true"><i class="fa fa-thumbs-up"><span
+                                        class="m-2">{{ comment.like.count }}</span></i></a> <a href="#"
+                                                                                               data-abc="true"><i
+                                        class="fa fa-thumbs-down"><span
+                                        class="m-2">{{ comment.dislike.count }}</span></i></a> </span>
                             </div>
-
                         </div>
                     </div>
                     </div>
