@@ -12,7 +12,7 @@ class Text(models.Model):
     text = HTMLField(verbose_name='متن')
     confirm = models.BooleanField('تایید', default=False)
     active = models.BooleanField('فعال', default=False)
-    date_pub = models.DateTimeField(verbose_name="تاریخ انتشار")
+    date_pub = models.DateTimeField(verbose_name="تاریخ انتشار",auto_now_add=True)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name='user_%(class)s',
                              verbose_name='کاربر')
     like = models.ManyToManyField(User, related_name="user_like_%(class)s", related_query_name="user_like_%(class)s",
@@ -20,9 +20,9 @@ class Text(models.Model):
     dislike = models.ManyToManyField(User, related_name="user_dislike_%(class)s",
                                      related_query_name="user_dislike_%(class)s", blank=True, null=True)
 
-    def save(self, *args, **kwargs):
-        self.date_pub = timezone.now()
-        super(Text, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.date_pub = timezone.now()
+    #     super(Text, self).save(*args, **kwargs)
 
     class Meta:
         permissions = [
