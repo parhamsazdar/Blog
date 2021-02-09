@@ -2,7 +2,16 @@
     font-family: Vazir;
     src: url(/static/fonts/Vazir.ttf);
         }
+
+@font-face {
+    font-family: Vazir-2;
+    src: url(/static/fonts/Vazir-Bold.ttf);
+        }
 * {
     font-family: Vazir;
 
+}
+
+h1, h2, h3, h4, h5, h6{
+     font-family: Vazir-2;
 }

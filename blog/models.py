@@ -26,11 +26,8 @@ class Text(models.Model):
 
     class Meta:
         permissions = [
-            ("wirte", "نوشتن"),
-            ("edit", "ویرایش"),
-            ("comment", "نظر"),
-            ("confirm", "تایید"),
-            ("active", "فعال")
+            ("confirm", "تایید کردن"),
+            ("active", "فعال کردن")
         ]
         abstract = True
 
@@ -46,13 +43,14 @@ class Post(Text):
     image = models.ImageField(verbose_name='عکس پست', upload_to='uploads/post_image', null=True, blank=True)
     category = models.ManyToManyField('Category', verbose_name="دسته بندی")
     tags = models.ManyToManyField('Tags', verbose_name="برجسب ها")
-    comments = models.ManyToManyField('Comments', related_name="post", null=True, blank=True)
 
 
 class Comments(Text):
     class Meta(Text.Meta):
         verbose_name = "نظر"
         verbose_name_plural = "نظرات"
+
+    post = models.ForeignKey(Post, related_name="comment", null=True, blank=True, on_delete=models.CASCADE)
 
 
 class Category(models.Model):
@@ -61,6 +59,7 @@ class Category(models.Model):
         verbose_name_plural = "دسته بندی ها"
 
     name = models.CharField('عنوان دسته بندی', max_length=30)
+    icon=models.CharField('fontawesome',max_length=100,null=True)
     parent = models.ForeignKey('Category', on_delete=models.PROTECT, null=True, blank=True, verbose_name='پدر',
                                related_name='subcategory')
 

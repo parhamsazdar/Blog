@@ -1,13 +1,19 @@
 {% load static %}
+{% load blog_extratags %}
 <html lang="en">
 <head>
     {% block link %}
 
         <meta charset="UTF-8">
         <title>LMS</title>
-                    <link rel="stylesheet" href="{% static "blog/css/post.css" %}">
+        <link rel="stylesheet" href="{% static "blog/css/base.css" %}">
         <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.5.3/css/bootstrap.min.css"
               integrity="sha384-JvExCACAZcHNJEc7156QaHXTnQL3hQBixvj5RV5buE7vgnNEzzskDtx9NQ4p6BJe"
+              crossorigin="anonymous">
+        <link href="http://fonts.googleapis.com/css?family=Calibri:400,300,700">
+
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+              integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
               crossorigin="anonymous">
     {% endblock %}
     {% block linkcss %}
@@ -17,56 +23,109 @@
 
 {% block baner %}{% endblock %}
 {% block menu %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#"><img src="/media/uploads/baner/blog_2.png" style="width: 100px"></a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info fixed-top">
+        <a class="navbar-brand" href="#"><img src="/media/uploads/baner/programing.png" style="width: 50px;"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'blog:index' %}">خانه <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">جدیدترین پست‌ها</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          دسته بندی ها
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">برنامه نویسی</a>
-          <a class="dropdown-item" href="#"> استارتاپ</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#"> موفقیت</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'blog:index' %}">خانه <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">جدیدترین پست‌ها</a>
+                </li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        دسته بندی ها
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">برنامه نویسی</a>
+                        <a class="dropdown-item" href="#"> استارتاپ</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#"> موفقیت</a>
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">درباره ما</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="جستجو..." aria-label="Search">
+                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">جستجو</button>
+            </form>
         </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">درباره ما</a>
-      </li>
-    </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="جستجو..." aria-label="Search">
-      <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">جستجو</button>
-    </form>
-  </div>
-</nav>
+    </nav>
 
 {% endblock %}
-<div class="container d-flex justify-content-center">
+{% block sidemenu %}
+    <div class="container-fluid d-flex" style="padding-top: 50px;">
+    <div class="row justify-content-end w-100">
+    <div class="col-2 collapse show d-md-flex bg-info pt-2 pl-0 min-vh-100" id="sidebar" style="position: relative;" >
+        <ul class="nav flex-column flex-nowrap overflow-hidden" style="position: fixed;">
+            <li class="nav-item">
+                <a class="nav-link text-truncate" href="#"><i class="fa fa-list-alt"></i> <span
+                        class="d-none d-sm-inline" style="font-size: 25px;">دسته بندی</span></a>
+            </li>
+            {% for category in categories %}
+                {% if not category.parent %}
+                    <li class="nav-item">
+                        <a class="nav-link collapsed text-truncate" href="{{ category.id|string_charp }}"
+                           data-toggle="collapse"
+                           data-target="{{ category.id|string_charp }}">
+                            {% if category.icon %}
+                                <i class="{{ category.icon }}"></i>
+                            {% endif %}
+                            <span
+                                    class="d-none d-sm-inline"
+                                    style="font-size: 20px;">{{ category.name }}</span></a>
+                        <div class="collapse" id="{{ category.id|string }}" aria-expanded="false">
+                            <ul class="flex-column pl-2 nav">
+                                {% for sub_cat in categories %}
+                                    {% if category.pk == sub_cat.parent.pk %}
+                                        <li class="nav-item"><a class="nav-link py-0"
+                                                                href="#">
+                                            {% if sub_cat.icon %}
+                                                <i class="{{ sub_cat.icon }}"></i>
+                                            {% endif %}
+                                            <span>{{ sub_cat.name }}</span></a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                    </li>
+
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}
+
+
 {% block content %}
 
 {% endblock %}
 </div>
 </div>
+
 {% block footer %}
 
 
 {% endblock %}
 <!-- jQuery and JS bundle w/ Popper.js -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.rtlcss.com/bootstrap/v4.5.3/js/bootstrap.bundle.min.js" integrity="sha384-40ix5a3dj6/qaC7tfz0Yr+p9fqWLzzAXiwxVLt9dw7UjQzGYw6rWRhFAnRapuQyK" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.rtlcss.com/bootstrap/v4.5.3/js/bootstrap.bundle.min.js"
+        integrity="sha384-40ix5a3dj6/qaC7tfz0Yr+p9fqWLzzAXiwxVLt9dw7UjQzGYw6rWRhFAnRapuQyK"
+        crossorigin="anonymous"></script>
 
 </body>
 </html>

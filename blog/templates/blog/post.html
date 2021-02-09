@@ -5,29 +5,29 @@
 {% load blog_extratags %}
 {% block linkcss %}
     <link rel="stylesheet" href="{% static "blog/css/post.css" %}">
-    <link href="http://fonts.googleapis.com/css?family=Calibri:400,300,700">
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
 
 {% endblock %}
+
 {% block content %}
 
 
+
+<div class="col-10">
     {% comment %} part body post (main-part) {% endcomment %}
-    <div class="card" style="width: 80%;">
+    <div class="card border-0" style="width: 80%;">
         {% comment %} part header post (main-part) {% endcomment %}
-        <div class="card" style="width: 100%;">
+        <div class="card border-0" style="width: 100%;">
             <div class="row no-gutters">
                 <div class="col-sm-10">
                     <div class="card-body">
-                        <div class="col-sm-2">
-                            <img class="card-header" src="{{ MEDIA_URL }}{{ photo.url }}"
-                                 style=";width: 50px;border-radius: 50%;padding: 0">
-                        </div>
-                        <h5 class="card-title">نویسنده:{{ post.user.first_name|add:" "|add:post.user.last_name }}</h5>
-                        <p class="card-text">تاریخ
+                        <div class="col-12 p-0 mb-2">
+                            <img class="card-header mb-50" src="{{ MEDIA_URL }}{{ post.user.user.photo.url }}"
+                                 style=";width: 30px;border-radius: 50%;padding: 0">
+                            <span class="card-title" style="font-size: 10px;">
+                                        نویسنده:{{ post.user.first_name|add:" "|add:post.user.last_name }}</span></div>
+                        <p class="card-text" style="font-size: 10px;">تاریخ
                             انتشار:{{ post.date_pub | jalali_date }}
                         </p>
                     </div>
@@ -50,7 +50,7 @@
                         <h5 class="text-secondary">{{ tag }}</h5></a></li>
                 {% endfor %}
             </ul>
-            {% if user_photo %}
+            {% if user.is_authenticated %}
                 <span class="action-icons"> <a href="#" data-abc="true"></a> <a
                         href="#" data-abc="true"><i class="fa fa-thumbs-up fa-2x"><span
                         class="m-2">{{ post.like.count }}</span> </i></a> <a href="#"
@@ -63,12 +63,12 @@
         {% comment %} part  record comment {% endcomment %}
         <div class="row">
             <div class="col">
-                {% if user_photo %}
+                {% if user.is_authenticated %}
                     <form>
                         <fieldset>
                             <div class="row">
                                 <div class="col-sm-3 col-lg-2 hidden-xs">
-                                    <img class="img-responsive" src="{{ MEDIA_URL }}{{ user_photo.url }}" alt="">
+                                    <img class="img-responsive" src="{{ MEDIA_URL }}{{ user.user.photo.url }}" alt="">
                                     <p>{{ user.first_name|add:" "|add:user.last_name }}</p>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-9 col-lg-10">
@@ -84,16 +84,17 @@
             </div>
         </div>
         {% comment %} part comment {% endcomment %}
-        <div class="card" style="width: 100%">
+        <div class="card border-0" style="width: 100%">
             <div class="card-body">
                 <h4 class="card-title">نظرات</h4>
                 <h6 class="card-subtitle">آخرین نظرات</h6>
             </div>
             <div class="comment-widgets m-b-20">
 
-                {% for comment in post.comments.all %}
+                {% for comment in post.comment.all %}
                     <div class="d-flex flex-row comment-row">
-                        <div class="p-2"><span class="round"><img src="{{ MEDIA_URL }}{{ photo.url }}" alt="user"
+                        <div class="p-2"><span class="round"><img src="{{ MEDIA_URL }}{{ comment.user.user.photo.url }}"
+                                                                  alt="user"
                                                                   width="50"></span></div>
                         <div class="comment-text w-100">
                             <h5>{{ comment.user.first_name|add:" "|add:comment.user.last_name }}</h5>
@@ -113,5 +114,6 @@
                     </div>
                 {% endfor %}
         </div>
+    </div>
     </div>
 {% endblock %}

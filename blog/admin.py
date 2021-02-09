@@ -22,34 +22,23 @@ class UserAdmin(BaseUserAdmin):
     inlines = (User_info_inline,)
 
 
-
-
-
-
-
-
-
-
 class Post_form(ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(Post_form, self).__init__(*args, **kwargs)
         if user is not None:
-            user=User.objects.get(user_id=user.pk)
+            user = User.objects.get(user_id=user.pk)
             self.fields['user'].queryset = user
 
     class Meta:
-        model=Post
-        fields="__all__"
-
-
-
+        model = Post
+        fields = "__all__"
 
 
 @admin.register(Post)
 class Post_admin(admin.ModelAdmin):
-    actions = ["confirm_post", "active_post"]
+    actions = ["confirm_post", "active_post", "reject_post","deactive_post"]
     readonly_fields = ["confirm", "active"]
     filter_horizontal = ("tags", "category")
     exclude = ("date_pub", "like", "dislike", "comments")
@@ -69,7 +58,7 @@ class Post_admin(admin.ModelAdmin):
     dislike_count.short_description = 'نپسندیده'
 
     def comment_count(self, obj):
-        return obj.comments.all().count()
+        return obj.comment.all().count()
 
     comment_count.admin_order_field = 'comments'
     comment_count.short_description = 'نظرات'
@@ -86,26 +75,27 @@ class Post_admin(admin.ModelAdmin):
         if request.user.has_perm("blog.confirm") is False:
             if 'confirm_post' in actions:
                 del actions['confirm_post']
+                del actions['reject_post']
         if request.user.has_perm("blog.active") is False:
             if 'active' in actions:
                 del actions['active']
+                del actions['deactive']
         return actions
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        elif request.user.has_perm("blog.wirte"):
-            self.list_display = ["title", "confirm", "active", "date_pub"]
-            self.form=partial(Post_form )
-            return qs.filter(user=request.user)
         elif request.user.has_perm("blog.confirm"):
             return qs
 
-    def get_changelist_form(self, request, **kwargs):
-        if request.user.has_perm("blog.wirte"):
+        elif request.user.has_perm("blog.add_post"):
             self.list_display = ["title", "confirm", "active", "date_pub"]
-        return super(Post_admin, self).get_changelist_form(request, **kwargs)
+            return qs.filter(user=request.user)
+
+    def reject_post(self, request, queryset):
+        queryset.update(confirm=False)
+        self.message_user(request, "پست مورد نظر رد شد", messages.SUCCESS)
 
     def confirm_post(self, request, queryset):
         queryset.update(confirm=True)
@@ -115,8 +105,14 @@ class Post_admin(admin.ModelAdmin):
         queryset.update(active=True)
         self.message_user(request, "پست مورد نظر فعال شد", messages.SUCCESS)
 
+    def deactive_post(self, request, queryset):
+        queryset.update(active=False)
+        self.message_user(request, "پست مورد نظر غیر فعال شد", messages.SUCCESS)
+
+    reject_post.short_description = 'رد کردن پست'
     confirm_post.short_description = 'تایید کردن پست'
     active_post.short_description = 'فعال کردن پست'
+    deactive_post.short_description = 'غیر فعال کردن پست'
 
     def get_changeform_initial_data(self, request):
         get_data = super(Post_admin, self).get_changeform_initial_data(request)
@@ -124,18 +120,19 @@ class Post_admin(admin.ModelAdmin):
         return get_data
 
 
-class PostInline(admin.TabularInline):
-    model = Post.comments.through
-    extra = 1
-
-
 @admin.register(Comments)
 class Comments_admin(admin.ModelAdmin):
-    inlines = [PostInline]
-    actions = ["confirm_post", "active_post"]
-    list_display = ["title", "confirm", "active", "like_count", "dislike_count", "date_pub"]
+    actions = ["confirm_comment", "active_comment"]
+    list_display = ["title", "confirm", "active", "like_count", "dislike_count", "date_pub", "post_style"]
     readonly_fields = ["confirm", "active"]
     exclude = ("date_pub", "like", "dislike")
+
+    def post_style(self, obj):
+        url = f"/admin/blog/post/{obj.post.pk}/change/"
+        return format_html("<a href='{}'>{}</a>", url, obj.post)
+
+    post_style.admin_order_field = 'post'
+    post_style.short_description = 'مطلب'
 
     def like_count(self, obj):
         return obj.like.all().count()
@@ -153,11 +150,11 @@ class Comments_admin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        elif request.user.has_perm("blog.wirte"):
-            # admin.site.disable_action('confirm_approval')
-            return qs.filter(post__user=request.user)
         elif request.user.has_perm("blog.confirm"):
             return qs
+
+        elif request.user.has_perm("blog.view_comments"):
+            return qs.filter(post__user=request.user)
 
     def get_actions(self, request):
         actions = super().get_actions(request)

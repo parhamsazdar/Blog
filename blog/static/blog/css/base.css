@@ -1,0 +1,31 @@
+@font-face {
+    font-family: Vazir;
+    src: url(/static/fonts/Vazir.ttf);
+}
+
+@font-face {
+    font-family: Vazir-2;
+    src: url(/static/fonts/Vazir-Bold.ttf);
+}
+
+* {
+    font-family: Vazir;
+
+}
+
+.nav-link[data-toggle].collapsed:before {
+    content: " ▾";
+}
+
+.nav-link[data-toggle]:not(.collapsed):before {
+    content: " ▴";
+}
+
+li a {
+    color: white;
+}
+
+li a:hover {
+    color: #f5dd5d !important;
+
+}

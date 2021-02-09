@@ -1,11 +1,4 @@
-@font-face {
-    font-family: Vazir;
-    src: url(/static/fonts/Vazir.ttf);
-        }
-* {
-    font-family: Vazir;
 
-}
 #li_tag {
 
     border-radius: 5px;
