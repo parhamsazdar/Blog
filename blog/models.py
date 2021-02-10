@@ -25,10 +25,7 @@ class Text(models.Model):
     #     super(Text, self).save(*args, **kwargs)
 
     class Meta:
-        permissions = [
-            ("confirm", "تایید کردن"),
-            ("active", "فعال کردن")
-        ]
+
         abstract = True
 
     def __str__(self):
@@ -39,6 +36,10 @@ class Post(Text):
     class Meta(Text.Meta):
         verbose_name = "پست"
         verbose_name_plural = "پست ها"
+        permissions = [
+            ("confirm_post", "تایید کردن"),
+            ("active_post", "فعال کردن")
+        ]
 
     image = models.ImageField(verbose_name='عکس پست', upload_to='uploads/post_image', null=True, blank=True)
     category = models.ManyToManyField('Category', verbose_name="دسته بندی")
@@ -46,9 +47,14 @@ class Post(Text):
 
 
 class Comments(Text):
+
     class Meta(Text.Meta):
         verbose_name = "نظر"
         verbose_name_plural = "نظرات"
+        permissions = [
+            ("confirm_comment", "تایید کردن"),
+            ("active_comment", "فعال کردن")
+        ]
 
     post = models.ForeignKey(Post, related_name="comment", null=True, blank=True, on_delete=models.CASCADE)
 

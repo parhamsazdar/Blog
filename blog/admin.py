@@ -38,9 +38,9 @@ class Post_form(ModelForm):
 
 @admin.register(Post)
 class Post_admin(admin.ModelAdmin):
-    actions = ["confirm_post", "active_post", "reject_post","deactive_post"]
+    actions = ["confirm_post", "active_post", "reject_post", "deactive_post"]
     readonly_fields = ["confirm", "active"]
-    filter_horizontal = ("tags", "category","like")
+    filter_horizontal = ("tags", "category", "like")
     exclude = ("date_pub", "dislike", "comments")
     list_display = ["title", "confirm", "active", "date_pub", "user_style", "like_count", "dislike_count",
                     "comment_count"]
@@ -72,11 +72,11 @@ class Post_admin(admin.ModelAdmin):
 
     def get_actions(self, request):
         actions = super().get_actions(request)
-        if request.user.has_perm("blog.confirm") is False:
+        if request.user.has_perm("blog.confirm_post") is False:
             if 'confirm_post' in actions:
                 del actions['confirm_post']
                 del actions['reject_post']
-        if request.user.has_perm("blog.active") is False:
+        if request.user.has_perm("blog.active_post") is False:
             if 'active' in actions:
                 del actions['active']
                 del actions['deactive']
@@ -86,7 +86,7 @@ class Post_admin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        elif request.user.has_perm("blog.confirm"):
+        elif request.user.has_perm("blog.confirm_post"):
             return qs
 
         elif request.user.has_perm("blog.add_post"):
@@ -122,7 +122,7 @@ class Post_admin(admin.ModelAdmin):
 
 @admin.register(Comments)
 class Comments_admin(admin.ModelAdmin):
-    actions = ["confirm_comment", "active_comment"]
+    actions = ["confirm_comment", "active_comment", "reject_comment", "deactive_comment"]
     list_display = ["title", "confirm", "active", "like_count", "dislike_count", "date_pub", "post_style"]
     readonly_fields = ["confirm", "active"]
     exclude = ("date_pub", "like", "dislike")
@@ -150,7 +150,7 @@ class Comments_admin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        elif request.user.has_perm("blog.confirm"):
+        elif request.user.has_perm("blog.confirm_comment"):
             return qs
 
         elif request.user.has_perm("blog.view_comments"):
@@ -158,25 +158,37 @@ class Comments_admin(admin.ModelAdmin):
 
     def get_actions(self, request):
         actions = super().get_actions(request)
-        if request.user.has_perm("blog.confirm") is False:
-            if 'confirm_post' in actions:
-                del actions['confirm_post']
-        if request.user.has_perm("blog.active") is False:
-            if 'active' in actions:
-                del actions['active']
+        if request.user.has_perm("blog.confirm_comment") is False:
+            if 'confirm_comment' in actions:
+                del actions['confirm_comment']
+                del actions['reject_comment']
+        if request.user.has_perm("blog.active_comment") is False:
+            if 'active_comment' in actions:
+                del actions['active_comment']
+                del actions['deactive_comment']
         return actions
 
     def confirm_comment(self, request, queryset):
         queryset.update(confirm=True)
         self.message_user(request, "پست مورد نظر تایید شد", messages.SUCCESS)
 
+    def reject_comment(self, request, queryset):
+        queryset.update(confirm=False)
+        self.message_user(request, "پست مورد نظر رد شد", messages.SUCCESS)
+
     confirm_comment.short_description = 'تایید کردن نظر'
+    reject_comment.short_description = 'رد کردن نظر'
 
     def active_comment(self, request, queryset):
         queryset.update(active=True)
         self.message_user(request, "پست مورد نظر فعال شد", messages.SUCCESS)
 
+    def deactive_comment(self, request, queryset):
+        queryset.update(active=False)
+        self.message_user(request, "نظر مورد نظر غیرفعال شد", messages.SUCCESS)
+
     active_comment.short_description = 'فعال کردن نظر'
+    deactive_comment.short_description = 'غیرفعال کردن نظر'
 
 
 @admin.register(Category)
