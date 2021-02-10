@@ -8,6 +8,9 @@
     src: url(/static/fonts/Vazir-Bold.ttf);
 }
 
+body {
+    background-color: #F4F4F4 !important;
+}
 * {
     font-family: Vazir;
 

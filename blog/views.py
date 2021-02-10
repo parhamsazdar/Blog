@@ -1,21 +1,33 @@
+from django.contrib.auth.models import User
 from django.db.models import Count
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from khayyam import JalaliDatetime
-
+from .user_func import *
 from blog.forms import Comment
 from blog.models import Post, User_info, Category
 
 from datetime import timedelta
 
 
+def most_prolific_user():
+    user = Post.objects.values("user").annotate(post_count=Count("id"))[:3]
+    most_prolific_user = [{User.objects.get(pk=i["user"]): i["post_count"]} for i in user]
+    return most_prolific_user
+
+
 def index(request):
     categories = Category.objects.all()
-    latest_post = Post.objects.filter(active=True, confirm=True).order_by('-date_pub')[:4]
-    popular_post = Post.objects.annotate(like_count=Count('like')).order_by('-like_count')[:4]
+    latest_post = Post.objects.filter(active=True, confirm=True).order_by('-date_pub')[:3]
+    popular_post = Post.objects.annotate(like_count=Count('like')).order_by('-like_count')[:3]
+
+    # user = Post.objects.values("user").annotate(post_count=Count("id"))[:3]
+    # most_prolific_user = [{"user":User.objects.get(pk=i["user"]), "count_post":i["post_count"]} for i in user]
+
     return render(request, "blog/index.html",
-                  {"categories": categories, "latest_post": latest_post, "popular_post": popular_post})
+                  {"categories": categories, "latest_post": latest_post, "popular_post": popular_post,
+                   "most_prolific_user": prolific_user(Post,User),"popular_user":popular_user(User)})
 
 
 def test(request):
