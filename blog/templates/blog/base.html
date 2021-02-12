@@ -66,58 +66,71 @@
     </nav>
 
 {% endblock %}
-{% block sidemenu %}
-    <div class="container-fluid d-flex" style="padding-top: 50px;">
-    <div class="row justify-content-end w-100">
-    <div class="col-2 collapse show d-md-flex bg-dark pt-2 pl-0 min-vh-100" id="sidebar" style="position: relative;" >
-        <ul class="nav flex-column flex-nowrap overflow-hidden" style="position: fixed;">
-            <li class="nav-item">
-                <a class="nav-link text-truncate" href="#"><i class="fa fa-list-alt"></i> <span
-                        class="d-none d-sm-inline" style="font-size: 25px;">دسته بندی</span></a>
-            </li>
-            {% for category in categories %}
-                {% if not category.parent %}
+<div class="container-fluid d-flex" style="padding-top: 50px;">
+    <div class="row justify-content-end w-100 justify-content-between">
+
+        {% block sidemenu %}
+
+            <div class="col-2 collapse show d-md-flex bg-dark pt-2 pl-0 min-vh-100" id="sidebar"
+                 style="position: relative;">
+                <ul class="nav flex-column flex-nowrap overflow-hidden" style="position: fixed;">
                     <li class="nav-item">
-                        <a class="nav-link collapsed text-truncate" href="{{ category.id|string_charp }}"
-                           data-toggle="collapse"
-                           data-target="{{ category.id|string_charp }}">
-                            {% if category.icon %}
-                                <i class="{{ category.icon }}"></i>
-                            {% endif %}
-                            <span
-                                    class="d-none d-sm-inline"
-                                    style="font-size: 20px;">{{ category.name }}</span></a>
-                        <div class="collapse" id="{{ category.id|string }}" aria-expanded="false">
-                            <ul class="flex-column pl-2 nav">
-                                {% for sub_cat in categories %}
-                                    {% if category.pk == sub_cat.parent.pk %}
-                                        <li class="nav-item"><a class="nav-link py-0"
-                                                                href="#">
-                                            {% if sub_cat.icon %}
-                                                <i class="{{ sub_cat.icon }}"></i>
-                                            {% endif %}
-                                            <span>{{ sub_cat.name }}</span></a>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-
-                            </ul>
-                        </div>
+                        <a class="nav-link text-truncate" href="#"><i class="fa fa-list-alt"></i> <span
+                                class="d-none d-sm-inline" style="font-size: 25px;">دسته بندی</span></a>
                     </li>
+                    {% for category in categories %}
+                        {% if not category.parent %}
+                            <li class="nav-item">
+                                <a class="nav-link collapsed text-truncate" href="{{ category.id|string_charp }}"
+                                   data-toggle="collapse"
+                                   data-target="{{ category.id|string_charp }}">
+                                    {% if category.icon %}
+                                        <i class="{{ category.icon }}"></i>
+                                    {% endif %}
+                                    <span
+                                            class="d-none d-sm-inline"
+                                            style="font-size: 20px;">{{ category.name }}</span></a>
+                                <div class="collapse" id="{{ category.id|string }}" aria-expanded="false">
+                                    <ul class="flex-column pl-2 nav">
+                                        {% for sub_cat in categories %}
+                                            {% if category.pk == sub_cat.parent.pk %}
+                                                <li class="nav-item"><a class="nav-link py-0"
+                                                                        href="{% url 'blog:suc_category' sub_cat.pk %}">
+                                                    {% if sub_cat.icon %}
+                                                        <i class="{{ sub_cat.icon }}"></i>
+                                                    {% endif %}
+                                                    <span>{{ sub_cat.name }}</span></a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
 
-                {% endif %}
-            {% endfor %}
-        </ul>
+                                    </ul>
+                                </div>
+                            </li>
+
+                        {% endif %}
+                    {% endfor %}
+                    {% block sub_cat %}{% endblock %}
+
+                </ul>
+            </div>
+
+        {% endblock %}
+
+
+        {% block slideshow %}
+
+
+        {% endblock %}
+
+
+
+
+        {% block content %}
+
+        {% endblock %}
+
     </div>
-
-{% endblock %}
-
-
-{% block content %}
-
-{% endblock %}
-
-</div>
 </div>
 
 {% block footer %}

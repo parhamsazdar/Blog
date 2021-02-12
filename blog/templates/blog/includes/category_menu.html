@@ -1,0 +1,34 @@
+{% load static %}
+{% load blog_extratags %}
+{% for category in categories %}
+
+        <li class="nav-item">
+            <a class="nav-link collapsed text-truncate" href="{{ category.id|string_charp }}"
+               data-toggle="collapse"
+               data-target="{{ category.id|string_charp }}">
+                {% if category.icon %}
+                    <i class="{{ category.icon }}"></i>
+                {% endif %}
+                <span
+                        class="d-none d-sm-inline"
+                        style="font-size: 20px;">{{ category.name }}</span></a>
+            <div class="collapse" id="{{ category.id|string }}" aria-expanded="false">
+                <ul class="flex-column pl-2 nav">
+                    {% for sub_cat in all_categories %}
+                        {% if category.pk == sub_cat.parent.pk %}
+                            <li class="nav-item"><a class="nav-link py-0"
+                                                    href="{% url 'blog:suc_category' sub_cat.pk %}">
+                                {% if sub_cat.icon %}
+                                    <i class="{{ sub_cat.icon }}"></i>
+                                {% endif %}
+                                <span>{{ sub_cat.name }}</span></a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                </ul>
+            </div>
+        </li>
+
+
+{% endfor %}
