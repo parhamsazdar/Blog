@@ -1,14 +1,11 @@
 from django.contrib.auth.models import User
-from django.db.models import Count
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
-from django.utils import timezone
-from khayyam import JalaliDatetime
 from .user_func import *
 from blog.forms import Comment
-from blog.models import Post, User_info, Category
+from blog.models import Post, Category
 
-from datetime import timedelta
+
 
 
 

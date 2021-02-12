@@ -1,8 +1,5 @@
-from datetime import datetime
-
-from django import template
 from khayyam import JalaliDatetime
-from persiantools import jdatetime
+
 from django import template
 
 register = template.Library()
@@ -22,11 +19,13 @@ def jalali_date_no_hour(value):
 
 @register.filter
 def string_charp(value):
-    return "#"+"category"+str(value)
+    return "#" + "category" + str(value)
+
 
 @register.filter
 def string(value):
-    return "category"+str(value)
+    return "category" + str(value)
+
 
 @register.filter
 def category_name(value):
