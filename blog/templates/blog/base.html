@@ -42,18 +42,7 @@
                     <a class="nav-link" href="#popular">محبوب ترین پست ها</a>
                 </li>
 
-                <li class="nav-item dropdown active">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        دسته بندی ها
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">برنامه نویسی</a>
-                        <a class="dropdown-item" href="#"> استارتاپ</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#"> موفقیت</a>
-                    </div>
-                </li>
+
                 <li class="nav-item active">
                     <a class="nav-link" href="#">درباره ما</a>
                 </li>
@@ -65,22 +54,28 @@
         </div>
     </nav>
 
+    {% block slideshow %}
+
+
+
+
+{% endblock %}
 {% endblock %}
 <div class="container-fluid d-flex" style="padding-top: 50px;">
     <div class="row justify-content-end w-100 justify-content-between">
 
         {% block sidemenu %}
 
-            <div class="col-2 collapse show d-md-flex bg-dark pt-2 pl-0 min-vh-100" id="sidebar"
+            <div class="col-2 collapse show d-md-flex pt-5 pl-0 min-vh-100" id="sidebar"
                  style="position: relative;">
-                <ul class="nav flex-column flex-nowrap overflow-hidden" style="position: fixed;">
+                <ul class="nav flex-column flex-nowrap overflow-hidden" style="position: sticky;top: 0;padding-top: 100px;">
                     <li class="nav-item">
                         <a class="nav-link text-truncate" href="#"><i class="fa fa-list-alt"></i> <span
                                 class="d-none d-sm-inline" style="font-size: 25px;">دسته بندی</span></a>
                     </li>
                     {% for category in categories %}
                         {% if not category.parent %}
-                            <li class="nav-item">
+                            <li class="nav-item heading_sub">
                                 <a class="nav-link collapsed text-truncate" href="{{ category.id|string_charp }}"
                                    data-toggle="collapse"
                                    data-target="{{ category.id|string_charp }}">
@@ -89,7 +84,7 @@
                                     {% endif %}
                                     <span
                                             class="d-none d-sm-inline"
-                                            style="font-size: 20px;">{{ category.name }}</span></a>
+                                            style="font-size: 20px;"><{{ category.name }}</span></a>
                                 <div class="collapse" id="{{ category.id|string }}" aria-expanded="false">
                                     <ul class="flex-column pl-2 nav">
                                         {% for sub_cat in categories %}
@@ -118,13 +113,6 @@
         {% endblock %}
 
 
-        {% block slideshow %}
-
-
-        {% endblock %}
-
-
-
 
         {% block content %}
 
@@ -144,6 +132,8 @@
 <script src="https://cdn.rtlcss.com/bootstrap/v4.5.3/js/bootstrap.bundle.min.js"
         integrity="sha384-40ix5a3dj6/qaC7tfz0Yr+p9fqWLzzAXiwxVLt9dw7UjQzGYw6rWRhFAnRapuQyK"
         crossorigin="anonymous"></script>
+
+<script src="{% static 'blog/js/cat_menu.js' %}"></script>
 
 </body>
 </html>

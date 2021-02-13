@@ -2,7 +2,7 @@
 {% load blog_extratags %}
 {% for category in categories %}
 
-        <li class="nav-item">
+        <li class="nav-item heading_sub">
             <a class="nav-link collapsed text-truncate" href="{{ category.id|string_charp }}"
                data-toggle="collapse"
                data-target="{{ category.id|string_charp }}">

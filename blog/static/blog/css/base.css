@@ -25,11 +25,11 @@ body {
 }
 
 li a {
-    color: white;
+    color: #343a40;
 }
 
-li a:hover {
-    color: #f5dd5d !important;
+#sidebar li a:hover {
+    color: black !important;
 
 }
 

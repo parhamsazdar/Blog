@@ -3,27 +3,35 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
 from .user_func import *
 from blog.forms import Comment
-from blog.models import Post, Category
-
-
-
+from blog.models import Post, Category, Tags
 
 
 def index(request):
-
     latest_post = Post.objects.filter(active=True, confirm=True).order_by('-date_pub')[:3]
     popular_post = Post.objects.annotate(like_count=Count('like')).order_by('-like_count')[:3]
 
     return render(request, "blog/index.html",
-                  { "latest_post": latest_post, "popular_post": popular_post,
-                   "most_prolific_user": prolific_user(Post,User),"popular_user":popular_user(User)})
+                  {"latest_post": latest_post, "popular_post": popular_post,
+                   "most_prolific_user": prolific_user(Post, User), "popular_user": popular_user(User)})
 
 
-def suc_category(request,cat_id):
-    post_of_cat=Post.objects.filter(id=cat_id).order_by('-date_pub')
-    category=Category.objects.filter(pk=cat_id)
+def writer_post(request, writer_id):
+    post = Post.objects.filter(user__pk=writer_id).order_by("-date_pub")
+    writer = User.objects.filter(pk=writer_id)
+    return render(request, 'blog/writer_post.html', {"posts": post, "writer": writer})
 
-    return render(request,"blog/subcategory.html",{"post_of_cat":post_of_cat,"category":category})
+
+def post_tag(request, tag_id):
+    tag = Tags.objects.filter(pk=tag_id)
+    post = Post.objects.filter(tags__in=tag).order_by('-date_pub')
+    return render(request, 'blog/tag_post.html', {"posts": post, "tag": tag})
+
+
+def suc_category(request, cat_id):
+    post_of_cat = Post.objects.filter(id=cat_id).order_by('-date_pub')
+    category = Category.objects.filter(pk=cat_id)
+
+    return render(request, "blog/subcategory.html", {"post_of_cat": post_of_cat, "category": category})
 
 
 def post_show(request, post_id):
