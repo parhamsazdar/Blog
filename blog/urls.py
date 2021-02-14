@@ -10,4 +10,5 @@ urlpatterns = [
     path('cat_post/<int:cat_id>', views.suc_category, name='suc_category'),
     path('writer_post/<int:writer_id>', views.writer_post, name="writer_post"),
     path('post_tag/<int:tag_id>', views.post_tag, name="post_tag"),
+    path('log_out/',views.log_out,name='log_out')
 ]

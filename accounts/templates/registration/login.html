@@ -1,0 +1,47 @@
+{% extends 'blog/base.html' %}
+
+
+
+{% block content %}
+    <div class="col-10 d-flex justify-content-center align-items-center">
+
+
+        {% if next %}
+            {% if user.is_authenticated %}
+                <p>شما وارد وبگاه شده بودید. اما اجازه دسترسی به این صفحه را ندارید. لطفا برای ادامه کار با حسابی که
+                    اجازه مورد نظر را دارد وارد شوید.</p>
+            {% else %}
+                <p>لطفا با حساب کاربری خود وارد شوید.</p>
+            {% endif %}
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>{{ form.username.label_tag }}</td>
+                    <td>{{ form.username }}</td>
+                </tr>
+                <tr>
+                    <td>{{ form.password.label_tag }}</td>
+                    <td>{{ form.password }}</td>
+                </tr>
+                {% if form.errors %}
+                <tr>
+                    <td></td>
+                    <td>
+                            <p>نام کاربری یا رمز عبور اشتباه است.</p>
+                    </td>
+                </tr>
+                 {% endif %}
+            </table>
+
+            <input type="submit" value="ورود">
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+        {% comment %}
+        {# Assumes you setup the password_reset view in your URLconf #}
+        <p><a href="{% url 'password_reset' %}">رمز را فراموش کردم</a></p>
+        {% endcomment %}
+    </div>
+{% endblock %}

@@ -21,8 +21,13 @@
 </head>
 <body dir="rtl" style="height: 100vh">
 
-{% block baner %}{% endblock %}
+
 {% block menu %}
+
+
+
+
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="#"><img src="/media/uploads/baner/programing.png" style="width: 50px;"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -43,23 +48,71 @@
                 </li>
 
 
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">درباره ما</a>
-                </li>
+
+
+                {% if not user.is_authenticated %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'login' %}"> ورود</a>
+                    </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user"></i>
+                            پنل کاربری
+                            {% comment %} <img src="{{ user.user.photo.url }}" style="width: 30px;border-radius: 50%;">{% endcomment %}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">
+                                <div style="height:auto;width: auto;">
+                                    <img class="card-header mb-50"
+                                         src="{{ user.user.photo.url }}"
+                                         style=";width: 30px;border-radius: 50%;padding: 0">
+                                    <span class="card-title" style="font-size: 10px;"> {{ user.first_name|add:" "|add:user.last_name }}</span>
+
+
+                            </a>
+                        <div class="dropdown-divider"></div>
+                            {% if 'blog.add_post' in perms %}
+                                <a class="dropdown-item" href="{% url 'admin:index' %}">پنل مدیریت</a>
+                            {% endif %}
+                            <div class="dropdown-divider"></div>
+
+                            <a class="dropdown-item" href="{% url 'blog:log_out' %}">خروج</a>
+                        </div>
+                    </li>
+
+
+
+
+                {% endif %}
+
             </ul>
+
+
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="جستجو..." aria-label="Search">
                 <button class="btn btn-outline-light my-2 my-sm-0" type="submit">جستجو</button>
             </form>
         </div>
+
+
     </nav>
+    {% block message %}
+        {% if messages %}
+            {% for message in messages %}
+                <div{% if message.tags %} class="{{ message.tags }} fixed-top"{% endif %}>{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
 
     {% block slideshow %}
 
 
 
 
-{% endblock %}
+    {% endblock %}
 {% endblock %}
 <div class="container-fluid d-flex" style="padding-top: 50px;">
     <div class="row justify-content-end w-100 justify-content-between">
@@ -68,7 +121,8 @@
 
             <div class="col-2 collapse show d-md-flex pt-5 pl-0 min-vh-100" id="sidebar"
                  style="position: relative;">
-                <ul class="nav flex-column flex-nowrap overflow-hidden" style="position: sticky;top: 0;padding-top: 100px;">
+                <ul class="nav flex-column flex-nowrap overflow-hidden"
+                    style="position: sticky;top: 0;padding-top: 100px;">
                     <li class="nav-item">
                         <a class="nav-link text-truncate" href="#"><i class="fa fa-list-alt"></i> <span
                                 class="d-none d-sm-inline" style="font-size: 25px;">دسته بندی</span></a>
@@ -78,7 +132,8 @@
                             <li class="nav-item heading_sub">
                                 <a class="nav-link collapsed text-truncate" href="{{ category.id|string_charp }}"
                                    data-toggle="collapse"
-                                   data-target="{{ category.id|string_charp }}" name="main_category" id="{{ category.pk }}">
+                                   data-target="{{ category.id|string_charp }}" name="main_category"
+                                   id="{{ category.pk }}">
                                     {% if category.icon %}
                                         <i class="{{ category.icon }}"></i>
                                     {% endif %}

@@ -1,10 +1,12 @@
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .user_func import *
 from blog.forms import Comment
 from blog.models import Post, Category, Tags
-
+from django.contrib import messages
 
 def index(request):
     latest_post = Post.objects.filter(active=True, confirm=True).order_by('-date_pub')[:3]
@@ -43,3 +45,9 @@ def post_show(request, post_id):
                       context={"post": post, "form": form, "categories": categories})
     else:
         return HttpResponseForbidden("این پست از دسترس خارج است")
+
+
+def log_out(request):
+    logout(request)
+    # messages.success(request, 'خروج با موفقیت انجام شد')
+    return redirect('blog:index')
