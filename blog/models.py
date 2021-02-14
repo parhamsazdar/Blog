@@ -82,7 +82,7 @@ class Tags(models.Model):
         return self.name
 
 
-class User_info(models.Model):
+class UserInfo(models.Model):
     phone = models.IntegerField('شماره تلفن', null=True, blank=True)
     photo = models.ImageField(verbose_name='عکس کاربر', upload_to='uploads/user_photo')
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='آیدی کاربری', related_name='info',

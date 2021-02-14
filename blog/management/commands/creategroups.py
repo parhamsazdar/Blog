@@ -4,7 +4,7 @@ from django.contrib.auth.models import Permission
 
 perm_1 = ["add_comments", "view_comments", "view_post"]
 perm_2 = ["add_post", "view_post", "change_post", "add_tags",  "view_tags", "active_post"]
-perm_3 = ["active_comment", "confirm_post", "confirm_comment", "delete_comments", "delete_tags","change_tags"]
+perm_3 = ["confirm_post", "confirm_comment", "delete_comments", "delete_tags"]
 
 groups = {1: "کاربران ساده", 2: "نویسندگان", 3: "ویراستاران"}
 

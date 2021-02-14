@@ -1,4 +1,3 @@
-
 from django.contrib import admin, messages
 from django.forms import ModelForm
 from django.urls import reverse
@@ -11,8 +10,9 @@ from django.contrib.auth.models import User
 from .models import Post
 from django import forms
 
+
 class User_info_inline(admin.StackedInline):
-    model = User_info
+    model = UserInfo
     can_delete = False
     verbose_name_plural = "مشخصات کاربری"
 
@@ -21,11 +21,11 @@ class UserAdmin(BaseUserAdmin):
     inlines = (User_info_inline,)
 
 
-class Post_form(ModelForm):
+class PostForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
-        super(Post_form, self).__init__(*args, **kwargs)
+        super(PostForm, self).__init__(*args, **kwargs)
         if user is not None:
             user = User.objects.get(user_id=user.pk)
             self.fields['user'].queryset = user
@@ -36,7 +36,7 @@ class Post_form(ModelForm):
 
 
 @admin.register(Post)
-class Post_admin(admin.ModelAdmin):
+class PostAdmin(admin.ModelAdmin):
     actions = ["confirm_post", "active_post", "reject_post", "deactive_post"]
     readonly_fields = ["confirm", "active"]
     filter_horizontal = ("tags", "like")
@@ -126,17 +126,24 @@ class Post_admin(admin.ModelAdmin):
     deactive_post.short_description = 'غیر فعال کردن پست'
 
     def get_changeform_initial_data(self, request):
-        get_data = super(Post_admin, self).get_changeform_initial_data(request)
+        get_data = super(PostAdmin, self).get_changeform_initial_data(request)
         get_data['user'] = request.user.pk
         return get_data
 
 
 @admin.register(Comments)
-class Comments_admin(admin.ModelAdmin):
+class CommentsAdmin(admin.ModelAdmin):
     actions = ["confirm_comment", "reject_comment"]
     list_display = ["title", "confirm", "like_count", "dislike_count", "date_pub", "post_style"]
     readonly_fields = ["confirm"]
     exclude = ("date_pub", "like", "dislike")
+    list_display_links = []
+
+    def has_module_permission(self, request):
+        if request.user.has_perm('blog.confirm_post'):
+            return True
+        else:
+            return False
 
     def post_style(self, obj):
         url = f"/admin/blog/post/{obj.post.pk}/change/"
@@ -166,7 +173,6 @@ class Comments_admin(admin.ModelAdmin):
 
         elif request.user.has_perm("blog.view_comments"):
             return qs.filter(post__user=request.user)
-
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -200,11 +206,8 @@ class Comments_admin(admin.ModelAdmin):
     reject_comment.short_description = 'رد کردن نظر'
 
 
-
-
-
 @admin.register(Category)
-class Category_admin(admin.ModelAdmin):
+class CategoryAdmin(admin.ModelAdmin):
     list_display = ["name", "parent_category"]
 
     def parent_category(self, obj):
@@ -219,7 +222,15 @@ class Category_admin(admin.ModelAdmin):
     parent_category.short_description = "سلسله دسته بندی"
 
 
+@admin.register(Tags)
+class TagsAdmin(admin.ModelAdmin):
+    def has_module_permission(self, request):
+        if request.user.has_perm('blog.confirm_post'):
+            return True
+        else:
+            return False
+
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
-admin.site.register(Tags)
 admin.site.register(MainContent)

@@ -27,6 +27,3 @@ def string(value):
     return "category" + str(value)
 
 
-@register.filter
-def category_name(value):
-    return value[0].name
