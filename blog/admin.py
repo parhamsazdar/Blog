@@ -1,4 +1,3 @@
-from functools import partial
 
 from django.contrib import admin, messages
 from django.forms import ModelForm
@@ -63,6 +62,16 @@ class Post_admin(admin.ModelAdmin):
     comment_count.admin_order_field = 'comments'
     comment_count.short_description = 'نظرات'
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if request.user.has_perm('blog.add_post'):
+            form.base_fields['user'].initial = request.user
+        disabled_fields = ('user',)
+        for item in disabled_fields:
+            if item in form.base_fields:
+                form.base_fields[item].disabled = True
+        return form
+
     def user_style(self, obj):
         url = f"/admin/auth/user/{obj.user.pk}/change/"
         return format_html("<a href='{}'>{}</a>", url, obj.user.first_name + " " + obj.user.last_name)
@@ -88,7 +97,6 @@ class Post_admin(admin.ModelAdmin):
             return qs
         elif request.user.has_perm("blog.confirm_post"):
             return qs
-
         elif request.user.has_perm("blog.add_post"):
             self.list_display = ["title", "confirm", "active", "date_pub"]
             return qs.filter(user=request.user)
@@ -156,6 +164,17 @@ class Comments_admin(admin.ModelAdmin):
         elif request.user.has_perm("blog.view_comments"):
             return qs.filter(post__user=request.user)
 
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if request.user.has_perm('blog.add_post'):
+            form.base_fields['user'].initial = request.user
+        disabled_fields = ('user',)
+        for item in disabled_fields:
+            if item in form.base_fields:
+                form.base_fields[item].disabled = True
+        return form
+
     def get_actions(self, request):
         actions = super().get_actions(request)
         if request.user.has_perm("blog.confirm_comment") is False:
@@ -210,3 +229,4 @@ class Category_admin(admin.ModelAdmin):
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Tags)
+admin.site.register(MainContent)
