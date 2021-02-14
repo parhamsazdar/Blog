@@ -18,13 +18,13 @@
     {% comment %} part body post (main-part) {% endcomment %}
     <div class="card border-0" style="width: 80%;">
         {% comment %} part header post (main-part) {% endcomment %}
-        <a href="{% url 'blog:writer_post'  post.user.user.pk %}" style="text-decoration: none;color: black">
+        <a href="{% url 'blog:writer_post'  post.user.info.pk %}" style="text-decoration: none;color: black">
         <div class="card border-0" style="width: 100%;">
             <div class="row no-gutters">
                 <div class="col-sm-10">
                     <div class="card-body">
                         <div class="col-12 p-0 mb-2">
-                            <img class="card-header mb-50" src="{{ MEDIA_URL }}{{ post.user.user.photo.url }}"
+                            <img class="card-header mb-50" src="{{ MEDIA_URL }}{{ post.user.info.photo.url }}"
                                  style=";width: 30px;border-radius: 50%;padding: 0">
                             <span class="card-title" style="font-size: 10px;">
                                         نویسنده:{{ post.user.first_name|add:" "|add:post.user.last_name }}</span></div>
@@ -70,7 +70,7 @@
                         <fieldset>
                             <div class="row">
                                 <div class="col-sm-3 col-lg-2 hidden-xs">
-                                    <img class="img-responsive" src="{{ MEDIA_URL }}{{ user.user.photo.url }}" alt="">
+                                    <img class="img-responsive" src="{{ MEDIA_URL }}{{ user.info.photo.url }}" alt="">
                                     <p>{{ user.first_name|add:" "|add:user.last_name }}</p>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-9 col-lg-10">
@@ -95,7 +95,7 @@
 
                 {% for comment in post.comment.all %}
                     <div class="d-flex flex-row comment-row">
-                        <div class="p-2"><span class="round"><img src="{{ MEDIA_URL }}{{ comment.user.user.photo.url }}"
+                        <div class="p-2"><span class="round"><img src="{{ MEDIA_URL }}{{ comment.user.info.photo.url }}"
                                                                   alt="user"
                                                                   width="50"></span></div>
                         <div class="comment-text w-100">
@@ -118,4 +118,43 @@
         </div>
     </div>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+    {% comment %}Modal{% endcomment %}
+
+    <!-- Modal -->
+<div class="modal fade" id="login_require" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
 {% endblock %}

@@ -9,7 +9,7 @@ def prolific_user(Post, User):
 
 def popular_user(User):
     wirters = [user for user in User.objects.all() if user.has_perm('blog.add_post')]
-    popular_user = [{"user": wirter, "like": sum([post.like.count() for post in wirter.user_post.all() if post.confirm==True])}
+    popular_user = [{"user": wirter, "like": sum([post.like.count() for post in wirter.post.all() if post.confirm==True])}
                     for wirter in wirters]
     popular_user = list(sorted(popular_user, key=lambda item: -item["like"]))[:3]
     return popular_user

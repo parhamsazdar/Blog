@@ -15,7 +15,7 @@
                 <div class="col-4">
                     <div class="card" id="card"
                          style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)), url('{{ post.image.url }}');">
-                        <div class="card-category">{{ post.category.all|category_name }}</div>
+                        <div class="card-category">{{ post.category.name }}</div>
                         <div class="card-description p-2 d-flex flex-column justify-content-start">
                             <h6 style="font-family: Vazir;">{{ post.title }}</h6>
                             <div class="card border-0" style="margin: 0;padding: 0;">
@@ -25,7 +25,7 @@
                                             <div class="col-12 p-0 mb-2">
 
                                                 <img class="card-header mb-50"
-                                                     src="{{ MEDIA_URL }}{{ post.user.user.photo.url }}"
+                                                     src="{{ MEDIA_URL }}{{ post.user.info.photo.url }}"
                                                      style=";width: 30px;border-radius: 50%;padding: 0">
                                                 <span class="card-title" style="font-size: 10px;">
                       نویسنده:{{ post.user.first_name|add:" "|add:post.user.last_name }}</span>

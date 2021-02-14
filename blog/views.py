@@ -30,7 +30,7 @@ def post_tag(request, tag_id):
 
 
 def suc_category(request, cat_id):
-    post_of_cat = Post.objects.filter(id=cat_id).order_by('-date_pub')
+    post_of_cat = Post.objects.filter(category__id=cat_id).order_by('-date_pub')
     category = Category.objects.filter(pk=cat_id)
 
     return render(request, "blog/subcategory.html", {"post_of_cat": post_of_cat, "category": category})
@@ -38,11 +38,10 @@ def suc_category(request, cat_id):
 
 def post_show(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    categories = Category.objects.all()
     if post.confirm and post.active:
         form = Comment()
         return render(request, "blog/post.html",
-                      context={"post": post, "form": form, "categories": categories})
+                      context={"post": post, "form": form})
     else:
         return HttpResponseForbidden("این پست از دسترس خارج است")
 

@@ -9,7 +9,7 @@ from .models import *
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from .models import Post
-
+from django import forms
 
 class User_info_inline(admin.StackedInline):
     model = User_info
@@ -39,7 +39,7 @@ class Post_form(ModelForm):
 class Post_admin(admin.ModelAdmin):
     actions = ["confirm_post", "active_post", "reject_post", "deactive_post"]
     readonly_fields = ["confirm", "active"]
-    filter_horizontal = ("tags", "category", "like")
+    filter_horizontal = ("tags", "like")
     exclude = ("date_pub", "dislike", "comments")
     list_display = ["title", "confirm", "active", "date_pub", "user_style", "like_count", "dislike_count",
                     "comment_count"]
@@ -64,12 +64,15 @@ class Post_admin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
+
         if request.user.has_perm('blog.add_post'):
             form.base_fields['user'].initial = request.user
         disabled_fields = ('user',)
         for item in disabled_fields:
             if item in form.base_fields:
                 form.base_fields[item].disabled = True
+                form.base_fields[item].widget = forms.HiddenInput()
+
         return form
 
     def user_style(self, obj):
@@ -130,9 +133,9 @@ class Post_admin(admin.ModelAdmin):
 
 @admin.register(Comments)
 class Comments_admin(admin.ModelAdmin):
-    actions = ["confirm_comment", "active_comment", "reject_comment", "deactive_comment"]
-    list_display = ["title", "confirm", "active", "like_count", "dislike_count", "date_pub", "post_style"]
-    readonly_fields = ["confirm", "active"]
+    actions = ["confirm_comment", "reject_comment"]
+    list_display = ["title", "confirm", "like_count", "dislike_count", "date_pub", "post_style"]
+    readonly_fields = ["confirm"]
     exclude = ("date_pub", "like", "dislike")
 
     def post_style(self, obj):
@@ -167,12 +170,14 @@ class Comments_admin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        if request.user.has_perm('blog.add_post'):
+        if request.user.has_perm('blog.add_comments'):
             form.base_fields['user'].initial = request.user
         disabled_fields = ('user',)
         for item in disabled_fields:
             if item in form.base_fields:
                 form.base_fields[item].disabled = True
+                form.base_fields[item].widget = forms.HiddenInput()
+
         return form
 
     def get_actions(self, request):
@@ -181,10 +186,6 @@ class Comments_admin(admin.ModelAdmin):
             if 'confirm_comment' in actions:
                 del actions['confirm_comment']
                 del actions['reject_comment']
-        if request.user.has_perm("blog.active_comment") is False:
-            if 'active_comment' in actions:
-                del actions['active_comment']
-                del actions['deactive_comment']
         return actions
 
     def confirm_comment(self, request, queryset):
@@ -198,16 +199,8 @@ class Comments_admin(admin.ModelAdmin):
     confirm_comment.short_description = 'تایید کردن نظر'
     reject_comment.short_description = 'رد کردن نظر'
 
-    def active_comment(self, request, queryset):
-        queryset.update(active=True)
-        self.message_user(request, "پست مورد نظر فعال شد", messages.SUCCESS)
 
-    def deactive_comment(self, request, queryset):
-        queryset.update(active=False)
-        self.message_user(request, "نظر مورد نظر غیرفعال شد", messages.SUCCESS)
 
-    active_comment.short_description = 'فعال کردن نظر'
-    deactive_comment.short_description = 'غیرفعال کردن نظر'
 
 
 @admin.register(Category)

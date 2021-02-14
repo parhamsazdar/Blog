@@ -7,18 +7,15 @@ class Text(models.Model):
     title = models.CharField('عنوان', max_length=50)
     text = HTMLField(verbose_name='متن')
     confirm = models.BooleanField('تایید', default=False)
-    active = models.BooleanField('فعال', default=False)
     date_pub = models.DateTimeField(verbose_name="تاریخ انتشار", auto_now_add=True)
-    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name='user_%(class)s',
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name='%(class)s',
                              verbose_name='کاربر')
-    like = models.ManyToManyField(User, related_name="user_like_%(class)s", related_query_name="user_like_%(class)s",
+    like = models.ManyToManyField(User, related_name="%(class)s_likedby", related_query_name="%(class)s_likedby",
                                   blank=True, null=True)
-    dislike = models.ManyToManyField(User, related_name="user_dislike_%(class)s",
-                                     related_query_name="user_dislike_%(class)s", blank=True, null=True)
+    dislike = models.ManyToManyField(User, related_name="%(class)s_dislikedby",
+                                     related_query_name="%(class)s_dislikedby", blank=True, null=True)
 
-    # def save(self, *args, **kwargs):
-    #     self.date_pub = timezone.now()
-    #     super(Text, self).save(*args, **kwargs)
+
 
     class Meta:
         abstract = True
@@ -36,8 +33,9 @@ class Post(Text):
             ("active_post", "فعال کردن")
         ]
 
+    active = models.BooleanField('فعال', default=True)
     image = models.ImageField(verbose_name='عکس پست', upload_to='uploads/post_image', null=True, blank=True)
-    category = models.ManyToManyField('Category', verbose_name="دسته بندی")
+    category = models.ForeignKey('Category', verbose_name="دسته بندی",on_delete=models.PROTECT)
     tags = models.ManyToManyField('Tags', verbose_name="برجسب ها")
 
 
@@ -87,7 +85,7 @@ class Tags(models.Model):
 class User_info(models.Model):
     phone = models.IntegerField('شماره تلفن', null=True, blank=True)
     photo = models.ImageField(verbose_name='عکس کاربر', upload_to='uploads/user_photo')
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='آیدی کاربری', related_name='user',
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='آیدی کاربری', related_name='info',
                                 null=True)
 
     def __str__(self):
