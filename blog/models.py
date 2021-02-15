@@ -4,7 +4,6 @@ from tinymce.models import HTMLField
 
 
 class Text(models.Model):
-    title = models.CharField('عنوان', max_length=50)
     text = HTMLField(verbose_name='متن')
     confirm = models.BooleanField('تایید', default=False)
     date_pub = models.DateTimeField(verbose_name="تاریخ انتشار", auto_now_add=True)
@@ -20,8 +19,7 @@ class Text(models.Model):
     class Meta:
         abstract = True
 
-    def __str__(self):
-        return self.title
+
 
 
 class Post(Text):
@@ -32,12 +30,14 @@ class Post(Text):
             ("confirm_post", "تایید کردن"),
             ("active_post", "فعال کردن")
         ]
-
+    title = models.CharField('عنوان', max_length=50)
     active = models.BooleanField('فعال', default=True)
     image = models.ImageField(verbose_name='عکس پست', upload_to='uploads/post_image', null=True, blank=True)
     category = models.ForeignKey('Category', verbose_name="دسته بندی",on_delete=models.PROTECT)
     tags = models.ManyToManyField('Tags', verbose_name="برجسب ها")
 
+    def __str__(self):
+        return self.title
 
 class Comments(Text):
     class Meta(Text.Meta):
@@ -50,6 +50,8 @@ class Comments(Text):
 
     post = models.ForeignKey(Post, related_name="comment", null=True, blank=True, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.post.title
 
 class Category(models.Model):
     class Meta:
@@ -60,6 +62,7 @@ class Category(models.Model):
     icon = models.CharField('fontawesome', max_length=100, null=True)
     parent = models.ForeignKey('Category', on_delete=models.PROTECT, null=True, blank=True, verbose_name='پدر',
                                related_name='subcategory')
+
 
     def __str__(self):
         category = ''

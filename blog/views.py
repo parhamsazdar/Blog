@@ -49,4 +49,4 @@ def post_show(request, post_id):
 def log_out(request):
     logout(request)
     # messages.success(request, 'خروج با موفقیت انجام شد')
-    return redirect('blog:index')
+    return redirect(request.META.get('HTTP_REFERER'))

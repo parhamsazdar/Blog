@@ -7,6 +7,10 @@
     text-align: center;
 }
 
+a:hover {
+    text-decoration: none;
+}
+
 #li_tag > a > h5{
 
      margin:0;

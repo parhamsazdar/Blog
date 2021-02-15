@@ -1,0 +1,15 @@
+{% if not user.is_authenticated %}
+    <span class="action-icons"> <a
+            href="#login_require" data-toggle="modal" data-abc="true"><i class="fa fa-thumbs-up fa-2x"><span
+            class="m-2">{{ post.like.count }}</span> </i></a> <a
+            data-abc="true" href="#login_require" data-toggle="modal"><i
+            class="fa fa-thumbs-down fa-2x"><span
+            class="m-2">{{ post.dislike.count }}</span> </i></a></span>
+{% else %}
+    <span class="action-icons"> <a
+            href="#" data-abc="true"><i class="fa fa-thumbs-up fa-2x"><span
+            class="m-2">{{ post.like.count }}</span> </i></a> <a
+            data-abc="true" href="#"><i
+            class="fa fa-thumbs-down fa-2x"><span
+            class="m-2">{{ post.dislike.count }}</span> </i></a></span>
+{% endif %}

@@ -11,14 +11,14 @@ from .models import Post
 from django import forms
 
 
-class User_info_inline(admin.StackedInline):
+class UserInfoInline(admin.StackedInline):
     model = UserInfo
     can_delete = False
     verbose_name_plural = "مشخصات کاربری"
 
 
 class UserAdmin(BaseUserAdmin):
-    inlines = (User_info_inline,)
+    inlines = (UserInfoInline,)
 
 
 class PostForm(ModelForm):
@@ -134,7 +134,7 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(Comments)
 class CommentsAdmin(admin.ModelAdmin):
     actions = ["confirm_comment", "reject_comment"]
-    list_display = ["title", "confirm", "like_count", "dislike_count", "date_pub", "post_style"]
+    list_display = [ "confirm", "like_count", "dislike_count", "date_pub", "post_style"]
     readonly_fields = ["confirm"]
     exclude = ("date_pub", "like", "dislike")
     list_display_links = []
