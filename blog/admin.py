@@ -134,16 +134,19 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(Comments)
 class CommentsAdmin(admin.ModelAdmin):
     actions = ["confirm_comment", "reject_comment"]
-    list_display = [ "confirm", "like_count", "dislike_count", "date_pub", "post_style"]
+    list_display = [ "text","post_style", "confirm", "like_count", "dislike_count", "date_pub",]
     readonly_fields = ["confirm"]
     exclude = ("date_pub", "like", "dislike")
-    list_display_links = []
+    list_display_links = ['text']
 
     def has_module_permission(self, request):
         if request.user.has_perm('blog.confirm_post'):
             return True
         else:
             return False
+
+    def post_title(self):
+        return self.post.title
 
     def post_style(self, obj):
         url = f"/admin/blog/post/{obj.post.pk}/change/"

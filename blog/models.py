@@ -14,8 +14,6 @@ class Text(models.Model):
     dislike = models.ManyToManyField(User, related_name="%(class)s_dislikedby",
                                      related_query_name="%(class)s_dislikedby", blank=True, null=True)
 
-
-
     class Meta:
         abstract = True
 

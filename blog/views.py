@@ -50,3 +50,7 @@ def log_out(request):
     logout(request)
     # messages.success(request, 'خروج با موفقیت انجام شد')
     return redirect(request.META.get('HTTP_REFERER'))
+
+
+# def record_like(request):
+#     if request.POST:

@@ -12,8 +12,6 @@
 
 {% block content %}
 
-
-
     <div class="col-10">
         {% comment %} part body post (main-part) {% endcomment %}
         <div class="card border-0" style="width: 80%;">
@@ -61,7 +59,8 @@
             <div class="row">
                 <div class="col">
                     {% if user.is_authenticated %}
-                        <form>
+                        <form id="comment" method="post" action="{% url 'api:create_comment' %}">
+                            {% csrf_token %}
                             <fieldset>
                                 <div class="row">
                                     <div class="col-sm-3 col-lg-2 hidden-xs">
@@ -71,9 +70,11 @@
                                     </div>
                                     <div class="form-group col-xs-12 col-sm-9 col-lg-10">
                             <textarea class="form-control" id="message" placeholder="نظر شما ..."
-                                      required="" rows=7 name="{{ form.text.name }}"></textarea>
+                                      required="" rows=7 name="text"></textarea>
                                     </div>
                                 </div>
+                                <input id="post_pk" type="hidden" value="{{ post.pk }}" name="post">
+                                <input id="user_pk" type="hidden" value="{{ user.pk }}" name="user">
                                 <button type="submit" class="btn btn-normal pull-left">ثبت نظر</button>
                             </fieldset>
                         </form>
@@ -98,25 +99,28 @@
                 <div class="comment-widgets m-b-20">
 
                     {% for comment in post.comment.all %}
-                        <div class="d-flex flex-row comment-row">
-                            <div class="p-2"><span class="round"><img
-                                    src="{{ MEDIA_URL }}{{ comment.user.info.photo.url }}"
-                                    alt="user"
-                                    width="50"></span></div>
-                            <div class="comment-text w-100">
-                                <h5>{{ comment.user.first_name|add:" "|add:comment.user.last_name }}</h5>
-                                <div class="comment-footer"><span
-                                        class="date"><p
-                                        style="font-size: 12px;">{{ comment.date_pub|jalali_date }}</p></span>
-                                    <p class="m-b-5 m-t-10">{{ comment.text|safe }}</p>
+                        {% if comment.confirm %}
+                            <div class="d-flex flex-row comment-row">
+                                <div class="p-2"><span class="round"><img
+                                        src="{{ MEDIA_URL }}{{ comment.user.info.photo.url }}"
+                                        alt="user"
+                                        width="50"></span></div>
+                                <div class="comment-text w-100">
+                                    <h5>{{ comment.user.first_name|add:" "|add:comment.user.last_name }}</h5>
+                                    <div class="comment-footer"><span
+                                            class="date"><p
+                                            style="font-size: 12px;">{{ comment.date_pub|jalali_date }}</p></span>
+                                        <p class="m-b-5 m-t-10">{{ comment.text|safe }}</p>
 
-                                    {% include 'blog/includes/allow_like_comment.html' %}
+                                        {% include 'blog/includes/allow_like_comment.html' %}
 
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        </div>
+                        {% endif %}
                     {% endfor %}
+                </div>
+
             </div>
         </div>
     </div>
@@ -127,7 +131,11 @@
     {% comment %}Modal{% endcomment %}
 
     {% include 'blog/modals/modal_login.html' %}
+    {% include 'blog/modals/modal_alert.html' %}
 
 
+{% endblock %}
+{% block script %}
+    <script src="{% static 'blog/js/post_send_comment.js' %}"></script>
 
 {% endblock %}
