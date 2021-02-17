@@ -6,10 +6,12 @@
             class="fa fa-thumbs-down fa-2x"><span
             class="m-2">{{ post.dislike.count }}</span> </i></a></span>
 {% else %}
-    <span class="action-icons"> <a
-            href="#" data-abc="true"><i class="fa fa-thumbs-up fa-2x"><span
-            class="m-2">{{ post.like.count }}</span> </i></a> <a
-            data-abc="true" href="#"><i
+    <span class="action-icons"> <a id="post_like"
+                                   {% if user in post.like.all %} style="color: red;" {% endif %}
+            href="{% url 'api:record_like_post' post_pk %}" data-abc="true"><i class="fa fa-thumbs-up fa-2x"><span
+            class="m-2" id="like_counter_post">{{ post.like.count }}</span> </i></a> <a
+            {% if user in post.dislike.all %} style="color: red;" {% endif %}
+            data-abc="true" href="{% url 'api:record_dislike_post' post_pk %}" id="post_dislike"><i
             class="fa fa-thumbs-down fa-2x"><span
-            class="m-2">{{ post.dislike.count }}</span> </i></a></span>
+            class="m-2" id="dislike_counter_post">{{ post.dislike.count }}</span> </i></a></span>
 {% endif %}

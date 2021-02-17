@@ -11,19 +11,28 @@ $(document).ready(function () {
             data: form.serialize(),
             success: function (resp) {
                 console.log(resp);
-                $('#alert .modal-body').append('نظر شما در انتظار تایید می باشد')
+                $('#alert .modal-body').html('نظر شما در انتظار تایید می باشد')
                 $('#alert').modal('show')
 
 
             },
             error: function (xhr, ajaxOptions, thrownError){
                 console.log(xhr)
-                $('#alert .modal-body').append(xhr.responseJSON['text'][0])
+                $('#alert .modal-body').html(xhr.responseJSON['text'][0])
                 $('#alert').modal('show')
 
             }
         });
     });
+
+
+
+
+
+
+
+
+
 
 
 

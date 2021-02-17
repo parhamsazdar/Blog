@@ -6,10 +6,12 @@
             class="fa fa-thumbs-down"><span
             class="m-2">{{ comment.dislike.count }}</span> </i></a></span>
 {% else %}
-    <span class="action-icons"> <a
-            href="#" data-abc="true"><i class="fa fa-thumbs-up"><span
-            class="m-2">{{ comment.like.count }}</span> </i></a> <a
-            data-abc="true" href="#"><i
+    <span class="action-icons"> <a id="comment_like"
+                                    {% if user in comment.like.all %} style="color: red;" {% endif %}
+            href="{% url 'api:record_like_comment' comment.pk %}" data-abc="true"><i class="fa fa-thumbs-up"><span
+            class="m-2" id="like_counter_comment">{{ comment.like.count }}</span> </i></a> <a id="comment_dislike"
+            {% if user in comment.dislike.all %} style="color: red;" {% endif %}
+            data-abc="true" href="{% url 'api:record_dislike_comment' comment.pk %}"><i
             class="fa fa-thumbs-down"><span
-            class="m-2">{{ comment.dislike.count }}</span> </i></a></span>
+            class="m-2" id="dislike_counter_comment">{{ comment.dislike.count }}</span> </i></a></span>
 {% endif %}
