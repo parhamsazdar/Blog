@@ -4,7 +4,7 @@ $(document).ready(function () {
         e.preventDefault();
         var form = $(this);
         var url = form.attr('action');
-
+        $textarea=$('#message')
         $.ajax({
             type: "POST",
             url: url,
@@ -12,8 +12,8 @@ $(document).ready(function () {
             success: function (resp) {
                 console.log(resp);
                 $('#alert .modal-body').html('نظر شما در انتظار تایید می باشد')
+                $textarea.val('')
                 $('#alert').modal('show')
-
 
             },
             error: function (xhr, ajaxOptions, thrownError){

@@ -100,7 +100,7 @@
 
                     {% for comment in post.comment.all %}
                         {% if comment.confirm %}
-                            <div class="d-flex flex-row comment-row">
+                            <div class="d-flex flex-row comment-row comment_box" id="comment_box" name="{{ comment.id }}">
                                 <div class="p-2"><span class="round"><img
                                         src="{{ MEDIA_URL }}{{ comment.user.info.photo.url }}"
                                         alt="user"
@@ -132,11 +132,12 @@
 
     {% include 'blog/modals/modal_login.html' %}
     {% include 'blog/modals/modal_alert.html' %}
-
+    {% include 'blog/includes/form_edit.html' %}
 
 {% endblock %}
 {% block script %}
     <script src="{% static 'blog/js/post_send_comment.js' %}"></script>
     <script src="{% static 'blog/js/post_like_dislike.js' %}"></script>
     <script src="{% static 'blog/js/comment_like_dislike.js' %}"></script>
+     <script src="{% static 'blog/js/edit_comment.js' %}"></script>
 {% endblock %}

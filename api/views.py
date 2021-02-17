@@ -138,3 +138,17 @@ def record_dislike_comment(request, comment_id):
             return JsonResponse(result)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+@renderer_classes([JSONRenderer])
+def edit_comment(request, comment_id):
+    try:
+        comment = Comments.objects.get(id=comment_id)
+    except Comments.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == "POST":
+        serializer = CommentEdit(comment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(serializer.data)

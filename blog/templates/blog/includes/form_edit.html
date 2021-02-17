@@ -1,0 +1,20 @@
+<form id="comment_edit"  method="post" id_user="{{ user.pk }}" style="width: 100%">
+    {% csrf_token %}
+    <fieldset>
+        <div class="row">
+            <div class="col-sm-3 col-lg-2 hidden-xs">
+                <img class="img-responsive" src="{{ MEDIA_URL }}{{ user.info.photo.url }}"
+                     alt="">
+                <p>{{ user.first_name|add:" "|add:user.last_name }}</p>
+            </div>
+            <div class="form-group col-xs-12 col-sm-9 col-lg-10">
+                            <textarea class="form-control" id="message" placeholder=" ویرایش نظر شما ..."
+                                      required="" rows=7 name="text"></textarea>
+            </div>
+        </div>
+
+        <input id="confirm" type="hidden" value="false" name="confirm">
+        <button type="submit" class="btn btn-normal pull-left" id="record_edit">ویرایش نظر</button>
+        <button type="button" class="btn btn-normal pull-left" id="forget">بی خیال</button>
+    </fieldset>
+</form>

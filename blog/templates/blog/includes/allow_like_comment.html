@@ -6,6 +6,7 @@
             class="fa fa-thumbs-down"><span
             class="m-2">{{ comment.dislike.count }}</span> </i></a></span>
 {% else %}
+    <div class="d-flex flex-row justify-content-between" style="width: auto;height: auto">
     <span class="action-icons"> <a id="comment_like"
                                     {% if user in comment.like.all %} style="color: red;" {% endif %}
             href="{% url 'api:record_like_comment' comment.pk %}" data-abc="true"><i class="fa fa-thumbs-up"><span
@@ -14,4 +15,9 @@
             data-abc="true" href="{% url 'api:record_dislike_comment' comment.pk %}"><i
             class="fa fa-thumbs-down"><span
             class="m-2" id="dislike_counter_comment">{{ comment.dislike.count }}</span> </i></a></span>
+        {% if user == comment.user %}
+        <a href="#" style="color: #99abb4" id="link_edit">ویرایش</a>
+            {% endif %}
+    </div>
+
 {% endif %}

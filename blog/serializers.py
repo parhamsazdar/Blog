@@ -95,3 +95,9 @@ class CommentDislikeSerializer(serializers.ModelSerializer):
         else:
             instance.dislike.remove(dislike[0])
             return {'result': "شما بازخورد منفی خود را نسبت به نظر برداشتید", "status": 202}
+
+
+class CommentEdit(serializers.ModelSerializer):
+    class Meta:
+        model = Comments
+        fields = ["text","confirm"]
