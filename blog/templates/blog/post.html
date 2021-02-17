@@ -132,7 +132,9 @@
 
     {% include 'blog/modals/modal_login.html' %}
     {% include 'blog/modals/modal_alert.html' %}
+    {% if user.is_authenticated %}
     {% include 'blog/includes/form_edit.html' %}
+    {% endif %}
 
 {% endblock %}
 {% block script %}
