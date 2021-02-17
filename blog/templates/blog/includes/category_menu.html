@@ -1,6 +1,8 @@
+
 {% load static %}
 {% load blog_extratags %}
 {% for category in categories %}
+
     {% if category.parent %}
         <li class="nav-item heading_sub">
             <a class="nav-link collapsed text-truncate" href="{{ category.id|string_charp }}"
@@ -10,7 +12,6 @@
                     <i class="{{ category.icon }}"></i>
                 {% endif %}
                 <span
-
 
                         class="d-none d-sm-inline"
                         style="font-size: 20px;">{{ category.name }}</span></a>

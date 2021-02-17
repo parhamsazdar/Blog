@@ -1,0 +1,25 @@
+{% block main_category %}
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+            دسته بندی های اصلی
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {% for category in categories %}
+                {% if not category.parent %}
+                    <a class="dropdown-item" href="{% url 'blog:suc_category' category.pk %}">{{ category.name }}</a>
+                    <div class="dropdown-divider"></div>
+
+                {% endif %}
+            {% endfor %}
+
+    </div>
+    </li>
+
+
+
+
+
+
+{% endblock %}

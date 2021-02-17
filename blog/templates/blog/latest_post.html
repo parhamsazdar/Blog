@@ -1,15 +1,10 @@
-{% extends "blog/base.html" %}
+{% extends 'blog/base.html' %}
 {% load static %}
-{% load blog_extratags %}
 {% block linkcss %}
-
         <link rel="stylesheet" href="{% static "blog/css/cat_post.css" %}">
 {% endblock %}
-
-
 {% block content %}
 
-{% include 'blog/includes/base_posts_show.html' with post=posts%}
-
+{% include 'blog/includes/base_posts_show.html' with posts=latest_post %}
 
 {% endblock %}
