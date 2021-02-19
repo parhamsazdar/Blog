@@ -13,7 +13,7 @@ $(document).ready(function () {
         $.ajax({
             headers: {'X-CSRFToken': csrftoken},
             url: url,
-            type: "POST",
+            type: "PUT",
             data: {
                 like: $('#user_pk').attr('value'),
             },
@@ -54,7 +54,7 @@ $(document).ready(function () {
         $.ajax({
             headers: {'X-CSRFToken': csrftoken},
             url: url,
-            type: "POST",
+            type: "PUT",
             data: {
                 dislike: $('#user_pk').attr('value'),
             },

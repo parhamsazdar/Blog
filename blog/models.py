@@ -31,7 +31,7 @@ class Post(Text):
     title = models.CharField('عنوان', max_length=50)
     active = models.BooleanField('فعال', default=True)
     image = models.ImageField(verbose_name='عکس پست', upload_to='uploads/post_image', null=True, blank=True)
-    category = models.ForeignKey('Category', verbose_name="دسته بندی",on_delete=models.PROTECT)
+    category = models.ForeignKey('Category', verbose_name="دسته بندی",on_delete=models.PROTECT,related_name='post')
     tags = models.ManyToManyField('Tags', verbose_name="برجسب ها")
 
     def __str__(self):
@@ -48,8 +48,15 @@ class Comments(Text):
 
     post = models.ForeignKey(Post, related_name="comment", null=True, blank=True, on_delete=models.CASCADE)
 
+    def save(self,*args,**kwargs):
+        self.confirm=False
+        return super(Comments, self).save()
+
+
     def __str__(self):
         return self.post.title
+
+
 
 class Category(models.Model):
     class Meta:

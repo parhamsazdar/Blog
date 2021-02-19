@@ -1,4 +1,4 @@
-<form id="comment_edit"  method="post" id_user="{{ user.pk }}" style="width: 100%">
+<form id="comment_edit"  method="put" id_user="{{ user.pk }}" style="width: 100%">
     {% csrf_token %}
     <fieldset>
         <div class="row">
@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <input id="confirm" type="hidden" value="false" name="confirm">
+        <input id="confirm" type="hidden" value="false" name="confirm" style="display: none;">
         <button type="submit" class="btn btn-normal pull-left" id="record_edit">ویرایش نظر</button>
         <button type="button" class="btn btn-normal pull-left" id="forget">بی خیال</button>
     </fieldset>

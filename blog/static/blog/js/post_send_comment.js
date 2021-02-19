@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     $("#comment").submit(function (e) {
         e.preventDefault();
         var form = $(this);
@@ -8,6 +8,7 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             url: url,
+            headers: {'X-CSRFToken': csrftoken},
             data: form.serialize(),
             success: function (resp) {
                 console.log(resp);

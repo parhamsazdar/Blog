@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     $form = $('#comment_edit').remove()
     $formcopy = $form.clone()
     UserId = $form.attr('id_user')
@@ -21,7 +21,8 @@ $(document).ready(function () {
         var url = "/api/edit_comment/"+$(this).attr('name');
         $textarea=$('#message')
         $.ajax({
-            type: "POST",
+            type: "PUT",
+            headers: {'X-CSRFToken': csrftoken},
             url: url,
             data: form.serialize(),
             success: function (resp) {

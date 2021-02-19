@@ -1,13 +1,12 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.fields import CurrentUserDefault
 
 from blog.models import Post, Comments
 
 
-
-
-
 class PostLikeSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Post
         fields = ["like"]
@@ -25,6 +24,12 @@ class PostLikeSerializer(serializers.ModelSerializer):
         else:
             instance.like.remove(like[0])
             return {'result': "شما بازخورد مثبت خود را نسبت به پست برداشتید", "status": 202}
+
+    # def save(self, **kwargs):
+    #     if self.validated_data['like']==CurrentUserDefault():
+    #         return super(self,**kwargs).save(**kwargs)
+
+
 
 
 class PostDislikeSerializer(serializers.ModelSerializer):
@@ -49,15 +54,17 @@ class PostDislikeSerializer(serializers.ModelSerializer):
 
 
 
-class CommentCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comments
-        fields = ["text", "user", "post"]
-
 
 
 
 class CommentLikeSerializer(serializers.ModelSerializer):
+    """
+    status = 200 means that user like that post.
+    status = 201 means that user change his or her opinion about a post or comment.
+    status = 202 means that user dont have any opinin about post or comment.
+
+    """
+
     class Meta:
         model = Comments
         fields = ["like"]
@@ -100,4 +107,11 @@ class CommentDislikeSerializer(serializers.ModelSerializer):
 class CommentEdit(serializers.ModelSerializer):
     class Meta:
         model = Comments
-        fields = ["text","confirm"]
+        fields = ["text"]
+
+
+class CommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comments
+        fields = ["text", "user", "post"]
+
