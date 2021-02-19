@@ -20,26 +20,35 @@ def index(request):
                    "most_prolific_user": prolific_user(Post, User), "popular_user": popular_user(User)})
 
 
-def writer_post(request, writer_id):
-    post = Post.objects.filter(user__pk=writer_id).order_by("-date_pub")
-    writer = User.objects.filter(pk=writer_id)
-    header = f"جدیدترین پست های {writer[0].first_name + ' ' + writer[0].last_name}"
-    return render(request, 'blog/writer_post.html', {"posts": post, "header": header})
+class WirterPost(generic.DetailView):
+    model = User
+
+    def get(self, request, *args, **kwargs):
+        user = get_object_or_404(User, pk=kwargs['pk'])
+        header = f"جدیدترین پست های {user.first_name + ' ' + user.last_name}"
+        context = {'posts': user.post.all(), "header": header}
+        return render(request, 'blog/writer_post.html', context)
 
 
-def post_tag(request, tag_id):
-    tag = Tags.objects.filter(pk=tag_id)
-    post = Post.objects.filter(tags__in=tag).order_by('-date_pub')
-    header = f"جدیدترین پست های بر چسب {tag[0].name}"
-    print(header)
-    return render(request, 'blog/tag_post.html', {"posts": post, "header": header})
+class TagsPost(generic.DetailView):
+    model = Tags
 
-def suc_category(request, cat_id):
-    post_of_cat = Post.objects.filter(category__id=cat_id).order_by('-date_pub')
-    category = Category.objects.filter(pk=cat_id)
-    header = f"جدیدترین پست های {category[0].name}"
-    return render(request, "blog/subcategory.html",
-                  {"post_of_cat": post_of_cat, "category": category, "header": header})
+    def get(self, request, *args, **kwargs):
+        tag = get_object_or_404(Tags, pk=kwargs['pk'])
+        header = f"جدیدترین پست های بر چسب {tag.name}"
+        context = {'posts': tag.post_set.all(), "header": header}
+        return render(request, 'blog/tag_post.html', context)
+
+
+class SubCategoryPost(generic.DetailView):
+    model = Category
+
+    def get(self, request, *args, **kwargs):
+        category = get_object_or_404(Category, pk=kwargs['pk'])
+        header = f"جدیدترین پست های {category.name}"
+        context = {'post_of_cat': category.post.order_by('-date_pub'), "header": header, "category": [category]}
+        return render(request, 'blog/subcategory.html', context)
+
 
 class PostShow(generic.DetailView):
     model = Post
