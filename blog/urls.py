@@ -12,5 +12,6 @@ urlpatterns = [
     path('post_tag/<int:pk>', views.TagsPost.as_view(), name="post_tag"),
     path('log_out/', views.log_out, name='log_out'),
     path('latest_post/', views.LatestPost.as_view(), name="LatestPost"),
-    path('popular_post/', views.PopularPost.as_view(), name="PopularPost")
+    path('popular_post/', views.PopularPost.as_view(), name="PopularPost"),
+    path('test_search/',views.test_search,name="test_search")
 ]

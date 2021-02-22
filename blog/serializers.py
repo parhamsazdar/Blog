@@ -6,7 +6,6 @@ from blog.models import Post, Comments
 
 
 class PostLikeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Post
         fields = ["like"]
@@ -24,12 +23,6 @@ class PostLikeSerializer(serializers.ModelSerializer):
         else:
             instance.like.remove(like[0])
             return {'result': "شما بازخورد مثبت خود را نسبت به پست برداشتید", "status": 202}
-
-    # def save(self, **kwargs):
-    #     if self.validated_data['like']==CurrentUserDefault():
-    #         return super(self,**kwargs).save(**kwargs)
-
-
 
 
 class PostDislikeSerializer(serializers.ModelSerializer):
@@ -50,11 +43,6 @@ class PostDislikeSerializer(serializers.ModelSerializer):
         else:
             instance.dislike.remove(dislike[0])
             return {'result': "شما بازخورد منفی خود را نسبت به پست برداشتید", "status": 202}
-
-
-
-
-
 
 
 class CommentLikeSerializer(serializers.ModelSerializer):
@@ -111,7 +99,18 @@ class CommentEdit(serializers.ModelSerializer):
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Comments
         fields = ["text", "user", "post"]
 
+
+class PostSearchIsvalid(serializers.Serializer):
+    search_word = serializers.CharField(max_length=50)
+
+
+class PostSearchShow(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id',"title"]

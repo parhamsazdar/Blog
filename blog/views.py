@@ -1,7 +1,7 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 
@@ -90,3 +90,13 @@ def log_out(request):
     logout(request)
     # messages.success(request, 'خروج با موفقیت انجام شد')
     return redirect(request.META.get('HTTP_REFERER'))
+
+
+
+def test_search(request):
+    if request.POST:
+        if request.POST["keyword"]:
+            post=Post.objects.filter(title__contains=request.POST['keyword'])
+            if len(post)>0:
+                return JsonResponse({'data':post[0].title,'src':post[0].image.url})
+        return JsonResponse({"data":"cant find"})

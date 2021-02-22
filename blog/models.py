@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from tinymce.models import HTMLField
 
+from blog.stop_word import tokenize_post_text
+
 
 class Text(models.Model):
     text = HTMLField(verbose_name='متن')
@@ -33,6 +35,14 @@ class Post(Text):
     image = models.ImageField(verbose_name='عکس پست', upload_to='uploads/post_image', null=True, blank=True)
     category = models.ForeignKey('Category', verbose_name="دسته بندی",on_delete=models.PROTECT,related_name='post')
     tags = models.ManyToManyField('Tags', verbose_name="برجسب ها")
+
+    def save(self,*args,**kwargs):
+        for word in tokenize_post_text(self.text):
+            new_word,create=Word.objects.get_or_create(word=word)
+            super().save(*args, **kwargs)
+            if self not in new_word.post.all():
+                new_word.post.add(self)
+        return
 
     def __str__(self):
         return self.title
@@ -108,3 +118,14 @@ class MainContent(models.Model):
     image = models.ImageField(verbose_name='عکس اسلاید', upload_to='uploads/slide_show')
     title = models.CharField('عنوان', max_length=200)
     short_description = models.CharField('توضیح کوتاه', max_length=300)
+
+
+
+class Word(models.Model):
+    class Meta:
+        indexes = [
+            models.Index(fields=['word']),
+        ]
+
+    word=models.CharField(max_length=50,verbose_name='کلمه')
+    post=models.ManyToManyField(Post,null=True)
