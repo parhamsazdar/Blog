@@ -1,9 +1,13 @@
+from datetime import datetime
+
+from dal import autocomplete
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from django.views import generic
 
 from .forms import PostSearchForm
@@ -16,7 +20,8 @@ from django.contrib import messages
 
 def index(request):
     latest_post = Post.objects.filter(active=True, confirm=True).order_by('-date_pub')[:3]
-    popular_post = Post.objects.annotate(like_count=Count('like')).order_by('-like_count')[:3]
+    popular_post = Post.objects.filter(confirm=True, active=True).annotate(like_count=Count('like')).order_by(
+        '-like_count')[:3]
 
     return render(request, "blog/index.html",
                   {"latest_post": latest_post, "popular_post": popular_post,
@@ -29,7 +34,7 @@ class WirterPost(generic.DetailView):
     def get(self, request, *args, **kwargs):
         user = get_object_or_404(User, pk=kwargs['pk'])
         header = f"جدیدترین پست های {user.first_name + ' ' + user.last_name}"
-        context = {'posts': user.post.all(), "header": header}
+        context = {'posts': user.post.filter(confirm=True, active=True), "header": header}
         return render(request, 'blog/writer_post.html', context)
 
 
@@ -39,7 +44,7 @@ class TagsPost(generic.DetailView):
     def get(self, request, *args, **kwargs):
         tag = get_object_or_404(Tags, pk=kwargs['pk'])
         header = f"جدیدترین پست های بر چسب {tag.name}"
-        context = {'posts': tag.post_set.all(), "header": header}
+        context = {'posts': tag.post_set.filter(confirm=True, active=True), "header": header}
         return render(request, 'blog/tag_post.html', context)
 
 
@@ -49,7 +54,8 @@ class SubCategoryPost(generic.DetailView):
     def get(self, request, *args, **kwargs):
         category = get_object_or_404(Category, pk=kwargs['pk'])
         header = f"جدیدترین پست های {category.name}"
-        context = {'post_of_cat': category.post.order_by('-date_pub'), "header": header, "category": [category]}
+        context = {'post_of_cat': category.post.filter(confirm=True, active=True).order_by('-date_pub'),
+                   "header": header, "category": [category]}
         return render(request, 'blog/subcategory.html', context)
 
 
@@ -86,7 +92,7 @@ class PopularPost(generic.ListView):
         return context
 
     def get_queryset(self):
-        return Post.objects.annotate(like_count=Count('like')).order_by('-like_count')
+        return Post.objects.filter(confirm=True, active=True).annotate(like_count=Count('like')).order_by('-like_count')
 
 
 def log_out(request):
@@ -98,23 +104,33 @@ def log_out(request):
 def search_post(request):
     word = request.GET.get('search_word')
     if word:
-        queryset = Post.objects.filter(Q(title__contains=word) | Q(user__first_name__contains=word) |
-                                       Q(user__last_name__contains=word) | Q(tags__name__contains=word)).distinct(
+        queryset = Post.objects.filter(confirm=True, active=True).filter(
+            Q(title__contains=word) | Q(user__first_name__contains=word) |
+            Q(user__last_name__contains=word) | Q(tags__name__contains=word)).distinct(
             'title')
         word_in_text = Word.objects.filter(word=stemmer(word))
-        print(word_in_text)
         if len(word_in_text) > 0:
             posts = word_in_text[0].post.all()
             queryset = queryset.union(queryset, posts)
         header = f"نتیجه جستجوی عبارت {word}"
         return render(request, 'blog/search_result.html', {"posts": queryset, "header": header})
-
     else:
-        return render(request,'blog/search_result.html',{"header":"عبارت مورد نظر یافت نشد"})
+        return render(request, 'blog/search_result.html', {"header": "عبارت مورد نظر یافت نشد"})
 
 
 def search_porefessional(request):
     if request.POST:
-        form=PostSearchForm(request.POST)
+        form = PostSearchForm(request.POST)
         if form.is_valid():
-            pass
+            data = form.cleaned_data
+            posts = Post.objects.filter(confirm=True, active=True, title__contains=data['title'],
+                                        user__first_name__contains=data["first_name"],
+                                        user__last_name__contains=data["last_name"],
+                                        tags__name__contains=data["tag"],
+                                        word__word__contains=stemmer(data["word"])).distinct('title')
+
+            if posts:
+                header = "نتیجه جستجو"
+            else:
+                header = "نتیجه ای یافت نشد"
+            return render(request, 'blog/search_result.html', {"posts": posts, "header": header})

@@ -104,12 +104,12 @@ class ShowAllPost(generics.ListAPIView):
 
     def get_queryset(self):
         word = self.request.query_params.get('search_word')
-        queryset = self.model.objects.filter(Q(title__contains=word) | Q(user__first_name__contains=word) |
-                                             Q(user__last_name__contains=word) | Q(tags__name__contains=word)).distinct(
+        queryset = self.model.objects.filter(confirm=True,active=True).filter(Q(title__contains=word) | Q(user__first_name__contains=word) |
+                                             Q(user__last_name__contains=word) | Q(category__name__contains=word)|Q(tags__name__contains=word)).distinct(
             'title')
         word_in_text = Word.objects.filter(word=stemmer(word))
         print(word_in_text)
         if len(word_in_text) > 0:
-            posts = word_in_text[0].post.all()
+            posts = word_in_text[0].post.filter(confirm=True,active=True)
             queryset = queryset.union(queryset, posts)
         return queryset

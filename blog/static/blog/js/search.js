@@ -4,6 +4,13 @@ $(document).ready(function () {
     var $Result = $('#result_search')
     var $ResultItem = $('#result_item').remove()
 
+
+    $('a#form_search').click(function (){
+        $('form#form_search')[0].reset();
+    })
+
+
+
     var ajaxFunction = function (data) {
         list = []
         $.ajax({

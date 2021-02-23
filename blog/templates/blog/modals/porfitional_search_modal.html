@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body">
 
-                <form action="#" method="post" class="form">
+                <form action="{% url 'blog:search_porefessional' %}" method="post" class="form" id="form_search">
                     {% csrf_token %}
 
                     {{ form|bootstrap }}

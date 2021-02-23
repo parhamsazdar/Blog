@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
 INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'django_jalali',
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'bootstrapform',
     'rest_framework',
     'search_views',
+    'dal',
 
 ]
 

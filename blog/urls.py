@@ -13,5 +13,7 @@ urlpatterns = [
     path('log_out/', views.log_out, name='log_out'),
     path('latest_post/', views.LatestPost.as_view(), name="LatestPost"),
     path('popular_post/', views.PopularPost.as_view(), name="PopularPost"),
-    path('search_post/',views.search_post,name="search_post")
+    path('search_post/',views.search_post,name="search_post"),
+    path('search_porefessional/',views.search_porefessional,name="search_porefessional"),
+
 ]
