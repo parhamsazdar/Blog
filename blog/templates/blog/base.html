@@ -3,7 +3,6 @@
 <html lang="en">
 <head>
     {% block link %}
-
         <meta charset="UTF-8">
         <title>LMS</title>
         <link rel="stylesheet" href="{% static "blog/css/base.css" %}">
@@ -85,35 +84,31 @@
 
                 {% endif %}
 
+            <li class="nav-item active">
+                    <a class="nav-link" href="#search_por" data-toggle="modal" data-target="#search_por">جستجوی پیشرفته</a>
+                </li>
+
             </ul>
 
 
-            {#            <form class="form-inline my-2 my-lg-0">#}
-            {#                <input class="form-control mr-sm-2" type="search" placeholder="جستجو..." aria-label="Search">#}
-            {#                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">جستجو</button>#}
-            {#            </form>#}
-
-            <form autocomplete="off" action="/action_page.php">
+            <form autocomplete="off" method="get" action="{% url 'blog:search_post' %}">
                 <div class="autocomplete" style="width:300px;">
-                    <input class="form-control mr-sm-2" id="search" type="search" name="myCountry"
-                           placeholder="...جستجو">
+                    <input class="form-control mr-sm-2" id="search" type="search" name="search_word"
+                           placeholder="...جستجو" required>
                 </div>
                 <button class="btn btn-outline-light my-2 my-sm-0" type="submit">جستجو</button>
                 <ul class="list-group mt-1 " style="position:absolute;display: none" id="result_search">
 
 
-                    <a href="#" id="result_item" class="mb-1" style="text-decoration: none;background-color: white;height: auto;width: 300px;border-radius: 5px;">
-                    <li class="list-group-item disabled" >
+                    <a href="#" id="result_item" class="mb-1"
+                       style="text-decoration: none;background-color: white;height: auto;width: 300px;border-radius: 5px;">
+                        <li class="list-group-item disabled">
 
-                    </li>
-                        </a>
+                        </li>
+                    </a>
                 </ul>
             </form>
-
-
         </div>
-
-
     </nav>
     {% block message %}
         {% if messages %}
@@ -124,9 +119,6 @@
     {% endblock %}
 
     {% block slideshow %}
-
-
-
 
     {% endblock %}
 {% endblock %}
@@ -192,7 +184,7 @@
     </div>
 </div>
 {% block footer %}
-
+    {% include 'blog/modals/porfitional_search_modal.html' %}
 
 {% endblock %}
 <!-- jQuery and JS bundle w/ Popper.js -->

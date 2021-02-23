@@ -34,7 +34,7 @@ class Post(Text):
     active = models.BooleanField('فعال', default=True)
     image = models.ImageField(verbose_name='عکس پست', upload_to='uploads/post_image', null=True, blank=True)
     category = models.ForeignKey('Category', verbose_name="دسته بندی",on_delete=models.PROTECT,related_name='post')
-    tags = models.ManyToManyField('Tags', verbose_name="برجسب ها")
+    tags = models.ManyToManyField('Tags', verbose_name="برجسب ها",null=True,blank=True)
 
     def save(self,*args,**kwargs):
         for word in tokenize_post_text(self.text):
@@ -128,4 +128,4 @@ class Word(models.Model):
         ]
 
     word=models.CharField(max_length=50,verbose_name='کلمه')
-    post=models.ManyToManyField(Post,null=True)
+    post=models.ManyToManyField(Post,null=True,related_name='word')

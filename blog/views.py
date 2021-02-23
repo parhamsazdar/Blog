@@ -1,13 +1,16 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponseForbidden, JsonResponse
+from django.db.models import Q
+from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 
+from .forms import PostSearchForm
+from .stop_word import stemmer
 from .user_func import *
-from blog.forms import Comment
-from blog.models import Post, Category, Tags
+
+from blog.models import Post, Category, Tags, Word
 from django.contrib import messages
 
 
@@ -92,11 +95,26 @@ def log_out(request):
     return redirect(request.META.get('HTTP_REFERER'))
 
 
+def search_post(request):
+    word = request.GET.get('search_word')
+    if word:
+        queryset = Post.objects.filter(Q(title__contains=word) | Q(user__first_name__contains=word) |
+                                       Q(user__last_name__contains=word) | Q(tags__name__contains=word)).distinct(
+            'title')
+        word_in_text = Word.objects.filter(word=stemmer(word))
+        print(word_in_text)
+        if len(word_in_text) > 0:
+            posts = word_in_text[0].post.all()
+            queryset = queryset.union(queryset, posts)
+        header = f"نتیجه جستجوی عبارت {word}"
+        return render(request, 'blog/search_result.html', {"posts": queryset, "header": header})
 
-def test_search(request):
+    else:
+        return render(request,'blog/search_result.html',{"header":"عبارت مورد نظر یافت نشد"})
+
+
+def search_porefessional(request):
     if request.POST:
-        if request.POST["keyword"]:
-            post=Post.objects.filter(title__contains=request.POST['keyword'])
-            if len(post)>0:
-                return JsonResponse({'data':post[0].title,'src':post[0].image.url})
-        return JsonResponse({"data":"cant find"})
+        form=PostSearchForm(request.POST)
+        if form.is_valid():
+            pass
