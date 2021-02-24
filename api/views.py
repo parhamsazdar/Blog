@@ -74,29 +74,6 @@ class RecordDislikeComment(MyCustomUpdateApi):
     serializer_class = CommentDislikeSerializer
 
 
-# class ShowPost(APIView):
-#     def post(self, request):
-#         serializer = PostSearch(data=request.data)
-#         if serializer.is_valid():
-#             pass
-@api_view(['GET', 'POST'])
-def post_search(request):
-    if request.method == 'POST':
-        serializer = PostSearchIsvalid(data=request.data)
-        if serializer.is_valid():
-            word = serializer.validated_data["search_word"]
-            posts = Post.objects.filter(
-                Q(title__contains=word) | Q(user__first_name__contains=word) | Q(user__last_name__contains=word))
-            post_serilized = PostSearchShow(posts, many=True)
-            return Response(post_serilized.data)
-    if request.method == "GET":
-        posts = Post.objects.all().defer('id')
-        serializer = PostSearchShow(data=posts, many=True)
-        if serializer.is_valid():
-            return Response(serializer.data)
-        return JsonResponse({'ali': 2})
-
-
 class ShowAllPost(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSearchShow

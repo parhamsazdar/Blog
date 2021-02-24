@@ -9,6 +9,7 @@ from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views import generic
+from search_views.filters import BaseFilter
 
 from .forms import PostSearchForm
 from .stop_word import stemmer
@@ -123,7 +124,7 @@ def search_porefessional(request):
         form = PostSearchForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            posts = Post.objects.filter(confirm=True, active=True, title__contains=data['title'],
+            posts = Post.objects.filter(confirm=True,active=True).filter(confirm=True, active=True, title__contains=data['title'],
                                         user__first_name__contains=data["first_name"],
                                         user__last_name__contains=data["last_name"],
                                         tags__name__contains=data["tag"],
@@ -134,3 +135,6 @@ def search_porefessional(request):
             else:
                 header = "نتیجه ای یافت نشد"
             return render(request, 'blog/search_result.html', {"posts": posts, "header": header})
+
+
+

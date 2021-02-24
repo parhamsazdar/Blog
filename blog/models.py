@@ -129,3 +129,6 @@ class Word(models.Model):
 
     word=models.CharField(max_length=50,verbose_name='کلمه')
     post=models.ManyToManyField(Post,null=True,related_name='word')
+
+    def __str__(self):
+        return self.word

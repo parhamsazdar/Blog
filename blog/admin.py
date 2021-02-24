@@ -39,8 +39,8 @@ class PostForm(ModelForm):
 class PostAdmin(admin.ModelAdmin):
     actions = ["confirm_post", "active_post", "reject_post", "deactive_post"]
     readonly_fields = ["confirm", "active"]
-    filter_horizontal = ("tags", "like")
-    exclude = ("date_pub", "dislike", "comments")
+    filter_horizontal = ("tags",)
+    exclude = ("date_pub", "dislike", "comments","like")
     list_display = ["title", "confirm", "active", "date_pub", "user_style", "like_count", "dislike_count",
                     "comment_count"]
 
