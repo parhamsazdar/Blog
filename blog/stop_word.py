@@ -4,6 +4,8 @@ import hazm
 from bs4 import BeautifulSoup
 from hazm import Stemmer, Normalizer
 
+# This list is persian stop word so the word in this list is not useable and remove from text
+# post for tokenize
 PersianStopWord = ['هایی', '', 'بازی کنان', 'بیش', 'شدی', 'گيري', 'شش  نداشته', 'کس', 'بکن', 'لطفاً', 'باشیم', 'اش',
                    'کاملاً', 'پاعینِ',
                    'به کرات', 'اين', 'اما', 'بالاخره', 'افسوس', 'چه بسا', 'اغلب', 'صرفا', 'یافتن', 'میکنند', 'کم',
@@ -232,8 +234,12 @@ PersianStopWord = {stemmer.stem(word) for word in hazm.stopwords_list() + Persia
 
 
 def tokenize_post_text(post_text):
-    stemmer = Stemmer()
-    normalizer = Normalizer()
+    """
+    Tokenize text of post before post is saving model post
+    """
+    stemmer = Stemmer()  # stem the persian word
+    normalizer = Normalizer()  # normilized persian sentece
+    # remove html tag and remove punctuation from word that tokenize
     word_list = {stemmer.stem(word).strip(string.punctuation + '۱۲۳۴۵۶۷۸۹۰' + '؟!.،,?').replace(u'\u200c', ' ').strip()
                  for word in
                  BeautifulSoup(normalizer.affix_spacing(post_text), "html.parser").text.split()}
@@ -242,5 +248,9 @@ def tokenize_post_text(post_text):
 
 
 def stemmer(word):
+    """
+    Remove html tag and stem the word .
+    Use this func in my search view for integrating my search process.
+    """
     stemmer = Stemmer()
-    return stemmer.stem(word)
+    return stemmer.stem(BeautifulSoup(word, "html.parser"))

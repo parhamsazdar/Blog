@@ -5,12 +5,26 @@ from rest_framework.fields import CurrentUserDefault
 from blog.models import Post, Comments
 
 
+
+
+
 class PostLikeSerializer(serializers.ModelSerializer):
+    """
+           status = 200 means that user like that post or comment.
+           status = 201 means that user change his or her opinion about a post or comment.
+           status = 202 means that user dont have any opinion about post or comment.
+
+    """
     class Meta:
         model = Post
         fields = ["like"]
 
     def update(self, instance, validated_data):
+        """
+        Checking  the user history in like or dislike comment or post
+        By the result of that add him or her to users that like or dislike this post or comment
+        I use return of this method for response of my APIView in using them in my template
+        """
         like = validated_data.pop('like')
         if like[0] not in instance.like.all():
             if like[0] not in instance.dislike.all():
@@ -26,11 +40,20 @@ class PostLikeSerializer(serializers.ModelSerializer):
 
 
 class PostDislikeSerializer(serializers.ModelSerializer):
+    """
+           status = 200 means that user dont like that post or comment.
+           status = 201 means that user change his or her opinion about a post or comment.
+           status = 202 means that user dont have any opinion about post or comment.
+    """
     class Meta:
         model = Post
         fields = ["dislike"]
 
     def update(self, instance, validated_data):
+        """
+            Checking  the user history in like or dislike comment or post
+             By the result of that add him or her to users that like or dislike this post or comment
+        """
         dislike = validated_data.pop('dislike')
         if dislike[0] not in instance.dislike.all():
             if dislike[0] not in instance.like.all():
@@ -47,7 +70,7 @@ class PostDislikeSerializer(serializers.ModelSerializer):
 
 class CommentLikeSerializer(serializers.ModelSerializer):
     """
-    status = 200 means that user like that post.
+    status = 200 means that user like that post or comment.
     status = 201 means that user change his or her opinion about a post or comment.
     status = 202 means that user dont have any opinin about post or comment.
 
@@ -58,6 +81,10 @@ class CommentLikeSerializer(serializers.ModelSerializer):
         fields = ["like"]
 
     def update(self, instance, validated_data):
+        """
+        Checking  the user history in like or dislike comment or post
+         By the result of that add him or her to users that like or dislike this post or comment
+        """
         like = validated_data.pop('like')
         if like[0] not in instance.like.all():
             if like[0] not in instance.dislike.all():
@@ -73,11 +100,21 @@ class CommentLikeSerializer(serializers.ModelSerializer):
 
 
 class CommentDislikeSerializer(serializers.ModelSerializer):
+    """
+       status = 200 means that user dont like that post or comment.
+       status = 201 means that user change his or her opinion about a post or comment.
+       status = 202 means that user dont have any opinion about post or comment.
+
+       """
     class Meta:
         model = Comments
         fields = ["dislike"]
 
     def update(self, instance, validated_data):
+        """
+            Checking  the user history in like or dislike comment or post
+            By the result of that add him or her to users that like or dislike this post or comment
+        """
         dislike = validated_data.pop('dislike')
         if dislike[0] not in instance.dislike.all():
             if dislike[0] not in instance.like.all():
@@ -106,11 +143,12 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         fields = ["text", "user", "post"]
 
 
-class PostSearchIsvalid(serializers.Serializer):
-    search_word = serializers.CharField(max_length=50)
 
 
 class PostSearchShow(serializers.ModelSerializer):
+    """
+    This Serializer is useing for live search in simple search of my site
+    """
     class Meta:
         model = Post
         fields = ['id',"title"]

@@ -6,6 +6,9 @@ from blog.stop_word import tokenize_post_text
 
 
 class Text(models.Model):
+    """
+    This is a abstract model that Post model and Comment model inheritance from this model
+    """
     text = HTMLField(verbose_name='متن')
     confirm = models.BooleanField('تایید', default=False)
     date_pub = models.DateTimeField(verbose_name="تاریخ انتشار", auto_now_add=True)
@@ -20,8 +23,6 @@ class Text(models.Model):
         abstract = True
 
 
-
-
 class Post(Text):
     class Meta(Text.Meta):
         verbose_name = "پست"
@@ -30,15 +31,21 @@ class Post(Text):
             ("confirm_post", "تایید کردن"),
             ("active_post", "فعال کردن")
         ]
+
     title = models.CharField('عنوان', max_length=50)
     active = models.BooleanField('فعال', default=True)
     image = models.ImageField(verbose_name='عکس پست', upload_to='uploads/post_image', null=True, blank=True)
-    category = models.ForeignKey('Category', verbose_name="دسته بندی",on_delete=models.PROTECT,related_name='post')
-    tags = models.ManyToManyField('Tags', verbose_name="برجسب ها",null=True,blank=True)
+    category = models.ForeignKey('Category', verbose_name="دسته بندی", on_delete=models.PROTECT, related_name='post')
+    tags = models.ManyToManyField('Tags', verbose_name="برجسب ها", null=True, blank=True)
 
-    def save(self,*args,**kwargs):
+    def save(self, *args, **kwargs):
+        """
+        Before saving post I tokenize the word of text for
+        more speed in searching in model Word
+
+        """
         for word in tokenize_post_text(self.text):
-            new_word,create=Word.objects.get_or_create(word=word)
+            new_word, create = Word.objects.get_or_create(word=word)
             super().save(*args, **kwargs)
             if self not in new_word.post.all():
                 new_word.post.add(self)
@@ -46,6 +53,7 @@ class Post(Text):
 
     def __str__(self):
         return self.title
+
 
 class Comments(Text):
     class Meta(Text.Meta):
@@ -58,14 +66,12 @@ class Comments(Text):
 
     post = models.ForeignKey(Post, related_name="comment", null=True, blank=True, on_delete=models.CASCADE)
 
-    def save(self,*args,**kwargs):
-        self.confirm=False
+    def save(self, *args, **kwargs):
+        self.confirm = False
         return super(Comments, self).save()
-
 
     def __str__(self):
         return self.post.title
-
 
 
 class Category(models.Model):
@@ -77,7 +83,6 @@ class Category(models.Model):
     icon = models.CharField('fontawesome', max_length=100, null=True)
     parent = models.ForeignKey('Category', on_delete=models.PROTECT, null=True, blank=True, verbose_name='پدر',
                                related_name='subcategory')
-
 
     def __str__(self):
         category = ''
@@ -111,6 +116,11 @@ class UserInfo(models.Model):
 
 
 class MainContent(models.Model):
+    """
+    This model describe a main content of site
+    What is this site about?? This model answer this question
+    Slide show index template using the data of this model.
+    """
     class Meta:
         verbose_name = 'محتوای اصلی'
         verbose_name_plural = "محتوای اصلی"
@@ -120,15 +130,19 @@ class MainContent(models.Model):
     short_description = models.CharField('توضیح کوتاه', max_length=300)
 
 
-
 class Word(models.Model):
+    """
+    This is model that contain the word of the post
+    after tookenize for searching in word of post text
+    """
     class Meta:
+        #Create index on word because of a lot of query on word
         indexes = [
             models.Index(fields=['word']),
         ]
 
-    word=models.CharField(max_length=50,verbose_name='کلمه')
-    post=models.ManyToManyField(Post,null=True,related_name='word')
+    word = models.CharField(max_length=50, verbose_name='کلمه')
+    post = models.ManyToManyField(Post, null=True, related_name='word')
 
     def __str__(self):
         return self.word

@@ -12,6 +12,10 @@ from django import forms
 
 
 class UserInfoInline(admin.StackedInline):
+    """
+    This is class for appearing UserInfo model fileds in User default django in admin site
+
+    """
     model = UserInfo
     can_delete = False
     verbose_name_plural = "مشخصات کاربری"
@@ -21,29 +25,18 @@ class UserAdmin(BaseUserAdmin):
     inlines = (UserInfoInline,)
 
 
-class PostForm(ModelForm):
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super(PostForm, self).__init__(*args, **kwargs)
-        if user is not None:
-            user = User.objects.get(user_id=user.pk)
-            self.fields['user'].queryset = user
-
-    class Meta:
-        model = Post
-        fields = "__all__"
-
-
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     actions = ["confirm_post", "active_post", "reject_post", "deactive_post"]
     readonly_fields = ["confirm", "active"]
     filter_horizontal = ("tags",)
-    exclude = ("date_pub", "dislike", "comments","like")
+    exclude = ("date_pub", "dislike", "comments", "like")
     list_display = ["title", "confirm", "active", "date_pub", "user_style", "like_count", "dislike_count",
                     "comment_count"]
 
+    """
+    These are some method that I use in my list display 
+    """
     def like_count(self, obj):
         return obj.like.all().count()
 
@@ -63,8 +56,10 @@ class PostAdmin(admin.ModelAdmin):
     comment_count.short_description = 'نظرات'
 
     def get_form(self, request, obj=None, **kwargs):
+        """
+        For initial writer of post in form with out asking a user in admin
+        """
         form = super().get_form(request, obj, **kwargs)
-
         if request.user.has_perm('blog.add_post'):
             form.base_fields['user'].initial = request.user
         disabled_fields = ('user',)
@@ -83,6 +78,9 @@ class PostAdmin(admin.ModelAdmin):
     user_style.short_description = 'نویسنده'
 
     def get_actions(self, request):
+        """
+        handle the given action by checking the permission  of request.user
+        """
         actions = super().get_actions(request)
         if request.user.has_perm("blog.confirm_post") is False:
             if 'confirm_post' in actions:
@@ -95,6 +93,10 @@ class PostAdmin(admin.ModelAdmin):
         return actions
 
     def get_queryset(self, request):
+        """
+        Handle that the writer can see just his or her post in his or her admin panel
+
+        """
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
@@ -103,6 +105,10 @@ class PostAdmin(admin.ModelAdmin):
         elif request.user.has_perm("blog.add_post"):
             self.list_display = ["title", "confirm", "active", "date_pub"]
             return qs.filter(user=request.user)
+
+    """
+    These are some actions that I define
+    """
 
     def reject_post(self, request, queryset):
         queryset.update(confirm=False)
@@ -125,21 +131,20 @@ class PostAdmin(admin.ModelAdmin):
     active_post.short_description = 'فعال کردن پست'
     deactive_post.short_description = 'غیر فعال کردن پست'
 
-    def get_changeform_initial_data(self, request):
-        get_data = super(PostAdmin, self).get_changeform_initial_data(request)
-        get_data['user'] = request.user.pk
-        return get_data
-
 
 @admin.register(Comments)
 class CommentsAdmin(admin.ModelAdmin):
     actions = ["confirm_comment", "reject_comment"]
-    list_display = [ "text","post_style", "confirm", "like_count", "dislike_count", "date_pub",]
+    list_display = ["text", "post_style", "confirm", "like_count", "dislike_count", "date_pub", ]
     readonly_fields = ["confirm"]
     exclude = ("date_pub", "like", "dislike")
     list_display_links = ['text']
 
     def has_module_permission(self, request):
+        """
+        For registering this model in admin just for person how can confirm the comment
+        For instance for writer this model is not register
+        """
         if request.user.has_perm('blog.confirm_post'):
             return True
         else:
@@ -149,35 +154,31 @@ class CommentsAdmin(admin.ModelAdmin):
         return self.post.title
 
     def post_style(self, obj):
+        """
+        Create a link for post in list display
+        """
         url = f"/admin/blog/post/{obj.post.pk}/change/"
         return format_html("<a href='{}'>{}</a>", url, obj.post)
 
     post_style.admin_order_field = 'post'
     post_style.short_description = 'مطلب'
 
-    def like_count(self, obj):
-        return obj.like.all().count()
-
-    like_count.admin_order_field = 'like'
-    like_count.short_description = 'پسندیده'
-
-    def dislike_count(self, obj):
-        return obj.dislike.all().count()
-
-    dislike_count.admin_order_field = 'dislike'
-    dislike_count.short_description = 'نپسندیده'
-
     def get_queryset(self, request):
+        """
+         Handle that the writer can see just his or her post comment in his or her admin panel
+        """
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
         elif request.user.has_perm("blog.confirm_comment"):
             return qs
-
         elif request.user.has_perm("blog.view_comments"):
             return qs.filter(post__user=request.user)
 
     def get_form(self, request, obj=None, **kwargs):
+        """
+        For initial writer of comment in form with out asking a user in admin
+        """
         form = super().get_form(request, obj, **kwargs)
         if request.user.has_perm('blog.add_comments'):
             form.base_fields['user'].initial = request.user
@@ -197,6 +198,10 @@ class CommentsAdmin(admin.ModelAdmin):
                 del actions['reject_comment']
         return actions
 
+    """
+    These are some actions that I define
+    """
+
     def confirm_comment(self, request, queryset):
         queryset.update(confirm=True)
         self.message_user(request, "پست مورد نظر تایید شد", messages.SUCCESS)
@@ -204,7 +209,20 @@ class CommentsAdmin(admin.ModelAdmin):
     def reject_comment(self, request, queryset):
         queryset.update(confirm=False)
         self.message_user(request, "پست مورد نظر رد شد", messages.SUCCESS)
+    """
+    I use this in method in my list display
+    """
+    def like_count(self, obj):
+        return obj.like.all().count()
 
+    like_count.admin_order_field = 'like'
+    like_count.short_description = 'پسندیده'
+
+    def dislike_count(self, obj):
+        return obj.dislike.all().count()
+
+    dislike_count.admin_order_field = 'dislike'
+    dislike_count.short_description = 'نپسندیده'
     confirm_comment.short_description = 'تایید کردن نظر'
     reject_comment.short_description = 'رد کردن نظر'
 
@@ -214,6 +232,9 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ["name", "parent_category"]
 
     def parent_category(self, obj):
+        """
+        For displaying parent of category and I use this method in list display
+        """
         category = ''
         cat = obj
         while cat.parent:
@@ -228,6 +249,9 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Tags)
 class TagsAdmin(admin.ModelAdmin):
     def has_module_permission(self, request):
+        """
+        This model is register just for admin site by using this method
+        """
         if request.user.has_perm('blog.confirm_post'):
             return True
         else:

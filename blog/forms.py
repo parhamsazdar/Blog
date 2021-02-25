@@ -6,6 +6,9 @@ from blog.models import Comments, Post, Word
 
 
 class PostSearchForm(forms.Form):
+    """
+    This is a form of professional search.
+    """
     title = forms.CharField(label='عنوان پست', max_length=50, required=False)
     tag = forms.CharField(max_length=30, label='برچسب', required=False)
     first_name = forms.CharField(label='نام نویسنده', required=False)

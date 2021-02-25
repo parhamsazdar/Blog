@@ -1,25 +1,21 @@
-from datetime import datetime
-
-from dal import autocomplete
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
 from django.views import generic
-from search_views.filters import BaseFilter
-
 from .forms import PostSearchForm
 from .stop_word import stemmer
 from .user_func import *
-
 from blog.models import Post, Category, Tags, Word
-from django.contrib import messages
 
 
 def index(request):
+    """
+    Providing latest post & popular post & prolific user &  popular user
+    for index template.
+    """
     latest_post = Post.objects.filter(active=True, confirm=True).order_by('-date_pub')[:3]
     popular_post = Post.objects.filter(confirm=True, active=True).annotate(like_count=Count('like')).order_by(
         '-like_count')[:3]
@@ -30,6 +26,9 @@ def index(request):
 
 
 class WirterPost(generic.DetailView):
+    """
+    Return all the post of specific writer.
+    """
     model = User
 
     def get(self, request, *args, **kwargs):
@@ -40,6 +39,9 @@ class WirterPost(generic.DetailView):
 
 
 class TagsPost(generic.DetailView):
+    """
+       Return all the post of specific tag.
+    """
     model = Tags
 
     def get(self, request, *args, **kwargs):
@@ -50,6 +52,9 @@ class TagsPost(generic.DetailView):
 
 
 class SubCategoryPost(generic.DetailView):
+    """
+       Return all the post of specific category.
+    """
     model = Category
 
     def get(self, request, *args, **kwargs):
@@ -61,6 +66,9 @@ class SubCategoryPost(generic.DetailView):
 
 
 class PostShow(generic.DetailView):
+    """
+    Return a specific post.
+    """
     model = Post
     template_name = 'blog/post.html'
     context_object_name = "post"
@@ -71,6 +79,9 @@ class PostShow(generic.DetailView):
 
 
 class LatestPost(generic.ListView):
+    """
+    Return all post order by pub date
+    """
     template_name = 'blog/latest_post.html'
     context_object_name = "latest_post"
 
@@ -84,6 +95,9 @@ class LatestPost(generic.ListView):
 
 
 class PopularPost(generic.ListView):
+    """
+    Return all post order by count of like
+    """
     template_name = 'blog/popular_post.html'
     context_object_name = "popular_post"
 
@@ -97,12 +111,20 @@ class PopularPost(generic.ListView):
 
 
 def log_out(request):
+    """
+    logout the user
+    """
     logout(request)
-    # messages.success(request, 'خروج با موفقیت انجام شد')
     return redirect(request.META.get('HTTP_REFERER'))
 
 
 def search_post(request):
+    """
+    This view receive query pram with method get that I named it search word.
+    I use search word for searching in my database. But the point is search word can
+    appear in title or text or tags or ... of the post.
+    This view is action simple search form 9in my menubar.
+    """
     word = request.GET.get('search_word')
     if word:
         queryset = Post.objects.filter(confirm=True, active=True).filter(
@@ -120,11 +142,17 @@ def search_post(request):
 
 
 def search_porefessional(request):
+    """
+    This view receive query pram with method get that I named it search word.
+    I use search word for searching in my database. But it use for porefessional search and
+    operator "and" established between my lookup query
+    """
     if request.POST:
         form = PostSearchForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            posts = Post.objects.filter(confirm=True,active=True).filter(confirm=True, active=True, title__contains=data['title'],
+            posts = Post.objects.filter(confirm=True, active=True,
+                                        title__contains=data['title'],
                                         user__first_name__contains=data["first_name"],
                                         user__last_name__contains=data["last_name"],
                                         tags__name__contains=data["tag"],
@@ -135,6 +163,3 @@ def search_porefessional(request):
             else:
                 header = "نتیجه ای یافت نشد"
             return render(request, 'blog/search_result.html', {"posts": posts, "header": header})
-
-
-
