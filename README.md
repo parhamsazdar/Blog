@@ -3,17 +3,18 @@
 ![Capture](https://user-images.githubusercontent.com/71823327/109257732-098c5880-780e-11eb-85c1-a5affe60addf.PNG)
 ![3](https://user-images.githubusercontent.com/71823327/109257722-05f8d180-780e-11eb-9c29-1244c9f7aa25.PNG)
 ## Short description
-This code is Django project website that people can post some posts in it and enjoy by reading or surffung in my website.
+This code is Django project website that people can post in it and enjoy reading or surffung the website.
 We have three groups in this project.
-The groups of below do them jobs in django admin and we dont have seprate UI for managing in our website.
+There is no  seperated UI for the following groups to do their relevant jobs .
+These groups utilize django admin for supplementing their task optimally.
 1. Admin (superuser)
-* He or she can controll all the site
+* Can control all the site
 2. Editor
-* Can confirm or reject a post also he can post a post
+* Can confirm or reject the post also  posts somthing
 3. Wirter
-* Can post a post and active or deactive his or her post
+* Can post and active or deactive it
 4. Simple user
-* Can comment, like , dislike a post
+* Can comment, like or dislike the post
 ## How to run this project
 1. cd to root directory
 2. Install requirements
@@ -27,7 +28,7 @@ The groups of below do them jobs in django admin and we dont have seprate UI for
 * `python manage.py migrate` 
 7. Runserver
 * `python manage.py runserver`
-8. Now you can enjoy my website by add some post in django admin (Remember the post should be active and confirm for displaying in my website (this is a rule))
+8. Now you can enjoy my website by add some post in django admin (Remember the post should be active and confirm for displaying in the website (this is a rule))
 ## Features
 1. Like or dislike a post
 2. Comment and edit comment
