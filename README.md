@@ -28,7 +28,11 @@ These groups utilize django admin for supplementing their task optimally.
 * `python manage.py migrate` 
 7. Runserver
 * `python manage.py runserver`
-8. Now you can enjoy my website by add some post in django admin (Remember the post should be active and confirm for displaying in the website (this is a rule))
+9. Now create some category when you are admin in your panel
+10. Also you have to specifiy your main content of site (what the site is generally about) and choose some high quality image with some describing sentence for it.
+Then you have to set thise data when you are in admin postion in to your data base.(Its about model MainContent in my code.)
+13. Now create some writers , simple users and editors.
+12. Now you can enjoy the website by add some post in django admin (Remember the post should be active and confirm for displaying in the website (this is a rule))
 ## Features
 1. Like or dislike a post
 2. Comment and edit comment
