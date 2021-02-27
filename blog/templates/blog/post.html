@@ -89,10 +89,9 @@
                     <h6 class="card-subtitle mb-3">آخرین نظرات</h6>
                     {% if not user.is_authenticated %}
                         <div class="alert alert-info">
-                            جهت ثبت نظر باید در سایت <a href="#"> عضو شوید </a> و یا <a
+                            جهت ثبت نظر باید در سایت <a href="{% url 'blog:enroll' %}"> عضو شوید </a> و یا <a
                                 href="{% url 'login' %}"> وارد سایت </a> شده باشید .
                         </div>
-
 
                     {% endif %}
                 </div>

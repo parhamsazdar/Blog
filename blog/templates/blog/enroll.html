@@ -1,0 +1,27 @@
+{% extends 'blog/base.html' %}
+{% load bootstrap %}
+
+
+{% block content %}
+    <div class="col-10 d-flex justify-content-center align-items-center mt-5">
+        <form enctype="multipart/form-data" action="{% url 'blog:enroll' %}" method="POST">
+        {% csrf_token %}
+        {% for field in signup_form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.help_text %}
+            <small style="color: grey">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+        <p style="color: red">{{ error }}</p>
+        {% endfor %}
+        </p>
+        {% endfor %}
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary">ثبت نام</button>
+        </div>
+
+    </form>
+    </div>
+{% endblock %}

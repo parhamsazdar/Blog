@@ -1,14 +1,15 @@
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
-from .forms import PostSearchForm
+from .forms import PostSearchForm, SignUpForm
 from .stop_word import stemmer
 from .user_func import *
-from blog.models import Post, Category, Tags, Word
+from blog.models import Post, Category, Tags, Word, UserInfo
 
 
 def index(request):
@@ -163,3 +164,34 @@ def search_porefessional(request):
             else:
                 header = "نتیجه ای یافت نشد"
             return render(request, 'blog/search_result.html', {"posts": posts, "header": header})
+
+
+def enroll(request):
+    """
+    Enroll simple user
+
+    """
+
+    if request.POST:
+        form = SignUpForm(request.POST, request.FILES)
+        print(request.FILES)
+        if form.is_valid():
+            photo = form.cleaned_data['image']
+            phone = form.cleaned_data['phone_number']
+            del form.cleaned_data["image"]
+            del form.cleaned_data["phone_number"]
+            group=Group.objects.exclude(permissions__codename__in=['add_post'])
+            user = form.save()
+            user.groups.set(group)
+            userinfo = UserInfo.objects.create(user=user, photo=photo, phone=phone)
+            login(request,user)
+            return redirect('blog:index')
+
+        else:
+            return render(request, 'blog/enroll.html', {"signup_form": form})
+
+    form = SignUpForm()
+    return render(request, 'blog/enroll.html', {"signup_form": form})
+
+
+

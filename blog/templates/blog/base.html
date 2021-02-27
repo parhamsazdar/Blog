@@ -51,6 +51,9 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="{% url 'login' %}"> ورود</a>
                     </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'blog:enroll' %}"> ثبت نام</a>
+                    </li>
                 {% endif %}
                 {% block main_category_dropdow_menu %}{% endblock %}
                 {% if user.is_authenticated %}
@@ -72,8 +75,9 @@
 
 
                             </a>
-                            <div class="dropdown-divider"></div>
+
                             {% if 'blog.add_post' in perms %}
+                                <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{% url 'admin:index' %}">پنل مدیریت</a>
                             {% endif %}
                             <div class="dropdown-divider"></div>
