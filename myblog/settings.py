@@ -129,5 +129,4 @@ LOGIN_REDIRECT_URL='/'
 
 MESSAGE_TAGS = {
     messages.SUCCESS: 'alert alert-success',
-
 }

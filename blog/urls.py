@@ -15,5 +15,6 @@ urlpatterns = [
     path('popular_post/', views.PopularPost.as_view(), name="PopularPost"),
     path('search_post/',views.search_post,name="search_post"),
     path('search_porefessional/',views.search_porefessional,name="search_porefessional"),
+    path('enroll/',views.enroll,name="enroll")
 
 ]
