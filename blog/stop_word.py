@@ -253,4 +253,4 @@ def stemmer(word):
     Use this func in my search view for integrating my search process.
     """
     stemmer = Stemmer()
-    return stemmer.stem(BeautifulSoup(word, "html.parser"))
+    return stemmer.stem(BeautifulSoup(word, "html.parser").text)
