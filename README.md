@@ -19,26 +19,38 @@ These groups utilize django admin for supplementing their task optimally.
 1. cd to root directory
 2. Install requirements
 * `pip install -r requirements.txt`
-4. Set your database configuration in settings_local.py (get help from settings_local_sample.py)
-3. Run initial command
+3. Set your database configuration if your not using `sqlite` in `settings_local.py` (you have to create `settings_local.py` get help from settings_local_sample.py)
+* `SECRET_KEY = 'SECRET_KEY'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'DATABASENAME',
+        'USER': 'USERNAME',
+        'PASSWORD': 'PASSWORD',
+        'HOST': 'HOST'
+    }
+}`
+
+5. Run initial command
 * `python manage.py creategroups`
-5. Create superuser
+6. Create superuser
 * `python manage.py createsuperuser`
-6. Now create your table.
+7. Now create your table.
 * `python manage.py migrate` 
-7. Runserver
+8. Runserver
 * `python manage.py runserver`
 9. Now create some category when you are admin in your panel
 10. Also you have to specifiy your main content of site (what the site is generally about) and choose some high quality image with some describing sentence for it.
 Then you have to set thise data when you are in admin postion in to your data base.(Its about model MainContent in my code.)
-13. Now create some writers , simple users and editors.
-12. Now you can enjoy the website by add some post in django admin (Remember the post should be active and confirm for displaying in the website (this is a rule))
+10. Now create some writers , simple users and editors.
+11. Now you can enjoy the website by add some post in django admin (Remember the post should be active and confirm for displaying in the website (this is a rule))
 ## Features
 1. Like or dislike a post
 2. Comment and edit comment
 3. Simple search (live search with Ajax) & professional search
 4. Post a post
 5. Edit post
-6. Using some tags for post
-7. Nested category
-8. Active and confirm a post
+6. enroll user
+7. Using some tags for post
+8. Nested category
+9. Active and confirm a post
