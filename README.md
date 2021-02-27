@@ -18,7 +18,7 @@ These groups utilize django admin for supplementing their task optimally.
 ## How to run this project
 1. cd to root directory
 2. Install requirements
-* `pip install -r requirements.txt`
+* `pip install -r requirements`
 3. Set your database configuration if your not using `sqlite` in `settings_local.py` (you have to create `settings_local.py` get help from settings_local_sample.py)
 * `SECRET_KEY = 'SECRET_KEY'
 DATABASES = {
