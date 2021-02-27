@@ -44,8 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrapform',
     'rest_framework',
-    'search_views',
-    'dal',
+
 
 ]
 
