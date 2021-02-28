@@ -44,9 +44,9 @@ class Post(Text):
         more speed in searching in model Word
 
         """
+        super().save(*args, **kwargs)
         for word in tokenize_post_text(self.text):
             new_word, create = Word.objects.get_or_create(word=word)
-            super().save(*args, **kwargs)
             if self not in new_word.post.all():
                 new_word.post.add(self)
         return
