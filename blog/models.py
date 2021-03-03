@@ -64,7 +64,7 @@ class Comments(Text):
             ("active_comment", "فعال کردن")
         ]
 
-    post = models.ForeignKey(Post, related_name="comment", null=True, blank=True, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name="comment", on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         self.confirm = False
@@ -107,7 +107,7 @@ class Tags(models.Model):
 
 class UserInfo(models.Model):
     phone = models.IntegerField('شماره تلفن', null=True, blank=True)
-    photo = models.ImageField(verbose_name='عکس کاربر', upload_to='uploads/user_photo')
+    photo = models.ImageField(verbose_name='عکس کاربر', upload_to='uploads/user_photo',default='/static/images/')
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='آیدی کاربری', related_name='info',
                                 null=True)
 

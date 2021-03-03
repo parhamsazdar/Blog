@@ -76,7 +76,9 @@ class PostShow(generic.DetailView):
 
     def get_queryset(self):
         qs = super(PostShow, self).get_queryset()
-        return qs.filter(confirm=True, active=True)
+        qs=qs.filter(confirm=True, active=True)
+        if len(qs)>0:
+            return qs
 
 
 class LatestPost(generic.ListView):
@@ -157,7 +159,7 @@ def search_porefessional(request):
                                         user__first_name__contains=data["first_name"],
                                         user__last_name__contains=data["last_name"],
                                         tags__name__contains=data["tag"],
-                                        word__word__contains=stemmer(data["word"])).distinct('title')
+                                        word__word__contains=stemmer(data["word"])).distinct('id')
 
             if posts:
                 header = "نتیجه جستجو"
